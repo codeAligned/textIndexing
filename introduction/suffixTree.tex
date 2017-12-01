@@ -1,0 +1,14 @@
+\section{Suffix Trees}
+
+\begin{Definition}
+  A \defi{suffix tree}{Suffix Tree} $\mathcal{T}$ for a string $S$ is the suffix trie of $S$ where each unary path is converted into a single edge. Those edges are labeled with the concatenation of the characters from the replaced edges. The leaves of the suffix tree store the text position where the corresponding suffix starts.
+\end{Definition}
+
+\begin{Example}
+  Figure~\ref{fig:suffixTreeExample} shows the suffix tree for the string "banana\$". It contains only $11$ vertices compared to the $23$ vertices of the suffix trie.
+  \drawing{introduction/tikz/suffixTreeExample.tex}{The suffix tree for the string "banana\$".}{suffixTreeExample}
+\end{Example}
+
+The suffix array can be constructed in time $\mathcal{O}(n)$ with algorithms by \textsc{Weiner}\cite{Weiner1973}, \textsc{McCreight}\cite{McCreight1976} or \textsc{Ukkonen}\cite{Ukkonen1995}. It needs $\mathcal{O}(n\log n + n\log \sigma)$ bits. The first summand is the space needed for the pointers to the children and the indices stored in the leaves. The second summand is the space needed for the edge labels. To achieve this space, the edge labels must not be stored explicitly. Instead we can store pointers to the first and last position of the label in the text.
+
+In practice, a suffix tree needs more than $20$ times the space of the original text. Based on the required functionality, this can even be worse.

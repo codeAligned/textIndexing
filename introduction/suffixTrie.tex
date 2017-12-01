@@ -1,0 +1,17 @@
+\section{Suffix Tries}
+
+\begin{Definition}
+  Let $S = \{S_0, S_1, \ldots, S_{N-1}\}$ be a set of strings over an alphabet $\Sigma$. A \defi{trie}{Trie} $\mathcal{T}$ is a tree, where each node represents a different prefix in the set $S$. The root represents the empty prefix $\varepsilon$. Vertex $u$ representing prefix $Y$ is a child of vertex $v$ representing prefix $X$, if and only if $Y = Xc$ for some character $c \in \Sigma$. The edge $(v,u)$ is then labeled $c$.\\
+  If $S$ is the set of all suffixes of a string $T$, the trie is called \defi{suffix trie}{Suffix Trie}.
+\end{Definition}
+
+\begin{Example}
+  Figure~\ref{fig:suffixTrieExample} shows the suffix trie for the string "banana\$". The dollar sign "\$" is a sentinel that does not appear elsewhere in the text. This guarantees, that no suffix is a prefix of another suffix and the suffix trie therefore has $n+1$ leaves.
+  \drawing{introduction/tikz/suffixTrieExample.tex}{The suffix trie for the string "banana\$"}{suffixTrieExample}
+\end{Example}
+
+To construct a trie over string set $S = \{S_0, \ldots, S_{N-1}\}$, we need $\mathcal{O}(\vert S_0 \vert + \ldots + \vert S_{N-1} \vert)$ steps. This bound is tight: If all characters are pairwise distinct in all strings and no two strings share a character, than the number of different prefixes and therefore vertices is given by $1 + \sum_{i=0}^{N-1} \vert S_i \vert$, where the additional $1$ represents the empty prefix $\varepsilon$.\\
+The time needed to search for a string $T$ of length $m = \vert T \vert$ in the trie depends on the implementation of the tree. If the children of each vertex are stored in a list, the time is in $\mathcal{O}(m\sigma)$. If the children are stored in a sorted array (using the order of the characters in the alphabet), the time is in $\mathcal{O}(m\log \sigma)$. By using a hash table and perfect hashing, the time is in $\mathcal{O}(m)$.
+
+The space needed to store the suffix trie $\mathcal{T}$ for a string of length $n$ is in $\mathcal{O}{(n^2\log \sigma + n^2\log n)}$ bits. The first summand is the space needed to store the $\mathcal{O}(n^2)$ edge labels of one character $c \in \Sigma$ each. The second summand is the space needed to store the pointers to the children of each node.
+

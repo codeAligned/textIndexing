@@ -1,48 +1,5 @@
 \chapter{Introduction}
 
-\begin{Definition}
-  Let $\Sigma = \{0, \ldots, \sigma - 1\}$ be a finite, ordered set. The elements of $\Sigma$ are called \defi{characters}{Character} or \defi{symbols}{Symbol} and $\Sigma$ is called an \defi{alphabet}{Alphabet} of size $\sigma$.
-\end{Definition}
-
-\begin{Definition}
-  A \defi{string}{String} $S$ is a sequence of characters from an alphabet $\Sigma$.
-  \begin{itemize}
-    \item We usually use $n = \vert S \vert$ to be the length of the string.
-    \item The $i$-th character of $S$ is $S[i]$. Indices are $0$-based.
-    \item The substring from the $i$-th to the $j$-th character is $S[i..j]$.
-    \item A substring with $i = 0$ is called \defi{prefix}{Prefix}. A substring with $j = n - 1$ is called \defi{suffix}{Suffix}.
-    \item The $i$-th suffix is $S[i..n-1]$.
-  \end{itemize}
-\end{Definition}
-
-\section{Suffix Tries}
-
-\begin{Definition}
-  Let $S = \{S_0, S_1, \ldots, S_{N-1}\}$ be a set of strings over an alphabet $\Sigma$. A \defi{trie}{Trie} $\mathcal{T}$ is a tree, where each node represents a different prefix in the set $S$. The root represents the empty prefix $\varepsilon$. Vertex $u$ representing prefix $Y$ is a child of vertex $v$ representing prefix $X$, if and only if $Y = Xc$ for some character $c \in \Sigma$. The edge $(v,u)$ is then labeled $c$.\\
-  If $S$ is the set of all suffixes of a string $T$, the trie is called \defi{suffix trie}{Suffix Trie}.
-\end{Definition}
-
-\begin{Example}
-  Figure~\ref{fig:suffixTrieExample} shows the suffix trie for the string "banana\$". The dollar sign "\$" is a sentinel that does not appear elsewhere in the text. This guarantees, that no suffix is a prefix of another suffix and the suffix trie therefore has $n+1$ leaves.
-  \drawing{introduction/suffixTrieExample.tex}{The suffix trie for the string "banana\$"}{suffixTrieExample}
-\end{Example}
-
-To construct a trie over string set $S = \{S_0, \ldots, S_{N-1}\}$, we need $\mathcal{O}(\vert S_0 \vert + \ldots + \vert S_{N-1} \vert)$ steps. This bound is tight: If all characters are pairwise distinct in all strings and no two strings share a character, than the number of different prefixes and therefore vertices is given by $1 + \sum_{i=0}^{N-1} \vert S_i \vert$, where the additional $1$ represents the empty prefix $\varepsilon$.\\
-The time needed to search for a string $T$ of length $m = \vert T \vert$ in the trie depends on the implementation of the tree. If the children of each vertex are stored in a list, the time is in $\mathcal{O}(m\sigma)$. If the children are stored in a sorted array (using the order of the characters in the alphabet), the time is in $\mathcal{O}(m\log \sigma)$. By using a hash table and perfect hashing, the time is in $\mathcal{O}(m)$.
-
-The space needed to store the suffix trie $\mathcal{T}$ for a string of length $n$ is in $\mathcal{O}{(n^2\log \sigma + n^2\log n)}$ bits. The first summand is the space needed to store the $\mathcal{O}(n^2)$ edge labels of one character $c \in \Sigma$ each. The second summand is the space needed to store the pointers to the children of each node.
-
-\section{Suffix Trees}
-
-\begin{Definition}
-  A \defi{suffix tree}{Suffix Tree} $\mathcal{T}$ for a string $S$ is the suffix trie of $S$ where each unary path is converted into a single edge. Those edges are labeled with the concatenation of the characters from the replaced edges. The leaves of the suffix tree store the text position where the corresponding suffix starts.
-\end{Definition}
-
-\begin{Example}
-  Figure~\ref{fig:suffixTreeExample} shows the suffix tree for the string "banana\$". It contains only $11$ vertices compared to the $23$ vertices of the suffix trie.
-  \drawing{introduction/suffixTreeExample.tex}{The suffix tree for the string "banana\$".}{suffixTreeExample}
-\end{Example}
-
-The suffix array can be constructed in time $\mathcal{O}(n)$ with algorithms by \textsc{Weiner}\cite{Weiner1973}, \textsc{McCreight}\cite{McCreight1976} or \textsc{Ukkonen}\cite{Ukkonen1995}. It needs $\mathcal{O}(n\log n + n\log \sigma)$ bits. The first summand is the space needed for the pointers to the children and the indices stored in the leaves. The second summand is the space needed for the edge labels. To achieve this space, the edge labels must not be stored explicitly. Instead we can store pointers to the first and last position of the label in the text.
-
-In practice, a suffix tree needs more than $20$ times the space of the original text. Based on the required functionality, this can even be worse.
+\input{introduction/definitions.tex}
+\input{introduction/suffixTrie.tex}
+\input{introduction/suffixTree.tex}
