@@ -1,0 +1,60 @@
+\documentclass{scrbook}
+
+% Font-/Inputencoding.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Colors.
+\usepackage{color}
+
+% Separations in enumerations.
+\usepackage{enumitem}
+\setlist{itemsep=1pt,topsep=3pt}
+
+% Use french spacing, even though its wrong for english sentences.
+\frenchspacing
+
+% Math.
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[standard,thmmarks]{ntheorem}
+\usepackage{amssymb}
+\theoremstyle{break}
+\theorembodyfont{\normalfont}
+\renewtheorem{Definition}{Definition}[chapter]
+\renewtheorem{Example}[Definition]{Example}
+\theorembodyfont{\itshape}
+
+% Pseudocode.
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
+\algsetup{indent=2em}
+
+% Nice table lines and page wide tables.
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% TikZ.
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Layout for introducing terms.
+\newcommand{\defi}[1]{\emph{\textcolor{blue}{#1}}}
+
+% Oneliner to embed TikZ images.
+% Parameter 1: Path to the image.
+% Parameter 2: Caption.
+% Parameter 3: The name of the label.
+\newcommand{\drawing}[3]{
+  \begin{figure}[htbp]
+    \centering
+    \input{#1}
+    \caption{#2}
+    \label{fig:#3}
+  \end{figure}
+}
+
+\begin{document}
+  \input{introduction/introduction.tex}
+\end{document}

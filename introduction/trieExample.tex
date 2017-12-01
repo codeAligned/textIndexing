@@ -1,0 +1,70 @@
+\begin{tikzpicture}
+  \tikzstyle{vertex}=[circle,draw,minimum size=17pt,inner sep=0pt]
+  \node[vertex] (epsilon) at (0,0) {};
+
+  \node[vertex] (d) at (-3,-1) {};
+  \draw (epsilon) -- (d) node[above,pos=0.7] {\$};
+
+  \node[vertex] (a) at (-1,-1) {};
+  \draw (epsilon) -- (a) node[above,pos=0.7] {a};
+
+  \node[vertex] (ad) at (-1.5,-2) {};
+  \draw (a) -- (ad) node[left,pos=0.5] {\$};
+
+  \node[vertex] (an) at (-0.5,-2) {};
+  \draw (a) -- (an) node[right,pos=0.5] {n};
+
+  \node[vertex] (ana) at (-0.5,-3) {};
+  \draw (an) -- (ana) node[right,pos=0.5] {a};
+
+  \node[vertex] (anad) at (-1,-4) {};
+  \draw (ana) -- (anad) node[left,pos=0.5] {\$};
+
+  \node[vertex] (anan) at (0,-4) {};
+  \draw (ana) -- (anan) node[right,pos=0.5] {n};
+
+  \node[vertex] (anana) at (0,-5) {};
+  \draw (anan) -- (anana) node[right,pos=0.5] {a};
+
+  \node[vertex] (ananad) at (0,-6) {};
+  \draw (anana) -- (ananad) node[right,pos=0.5] {\$};
+
+  \node[vertex] (b) at (1,-1) {};
+  \draw (epsilon) -- (b) node[above,pos=0.7] {b};
+
+  \node[vertex] (n) at (3,-1) {};
+  \draw (epsilon) -- (n) node[above,pos=0.7] {n};
+
+  \node[vertex] (ba) at (1,-2) {};
+  \draw (b) -- (ba) node[right, pos=0.5] {a};
+
+  \node[vertex] (ban) at (1,-3) {};
+  \draw (ba) -- (ban) node[right, pos=0.5] {n};
+
+  \node[vertex] (bana) at (1,-4) {};
+  \draw (ban) -- (bana) node[right, pos=0.5] {a};
+
+  \node[vertex] (banan) at (1,-5) {};
+  \draw (bana) -- (banan) node[right, pos=0.5] {n};
+
+  \node[vertex] (banana) at (1,-6) {};
+  \draw (banan) -- (banana) node[right, pos=0.5] {a};
+
+  \node[vertex] (bananad) at (1,-7) {};
+  \draw (banana) -- (bananad) node[right, pos=0.5] {\$};
+
+  \node[vertex] (na) at (3,-2) {};
+  \draw (n) -- (na) node[right,pos=0.5] {a};
+
+  \node[vertex] (nad) at (2.5,-3) {};
+  \draw (na) -- (nad) node[left,pos=0.5] {\$};
+
+  \node[vertex] (nan) at (3.5,-3) {};
+  \draw (na) -- (nan) node[right,pos=0.5] {n};
+
+  \node[vertex] (nana) at (3.5,-4) {};
+  \draw (nan) -- (nana) node[right,pos=0.5] {a};
+
+  \node[vertex] (nanad) at (3.5,-5) {};
+  \draw (nana) -- (nanad) node[right,pos=0.5] {\$};
+\end{tikzpicture}

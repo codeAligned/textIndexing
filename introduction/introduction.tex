@@ -1,0 +1,29 @@
+\chapter{Introduction}
+
+\begin{Definition}
+  Let $\Sigma = \{0, \ldots, \sigma - 1\}$ be a finite, ordered set. The elements of $\Sigma$ are called \defi{characters} or \defi{symbols} and $\Sigma$ is called an \defi{alphabet} of size $\sigma$.
+\end{Definition}
+
+\begin{Definition}
+  A \defi{string} $S$ is a sequence of characters from an alphabet $\Sigma$.
+  \begin{itemize}
+    \item We usually use $n = \vert S \vert$ to be the length of the string.
+    \item The $i$-th character of $S$ is $S[i]$. Indices are $0$-based.
+    \item The substring from the $i$-th to the $j$-th character is $S[i..j]$.
+    \item A substring with $i = 0$ is called \defi{prefix}. A substring with $j = n - 1$ is called \defi{suffix}.
+    \item The \defi{$i$-th suffix} is $S[i..n-1]$.
+  \end{itemize}
+\end{Definition}
+
+\section{Tries}
+
+\begin{Definition}
+  Let $S = \{S_0, S_1, \ldots, S_{N-1}\}$ be a set of strings over an alphabet $\Sigma$. A \defi{trie} is a tree, where each node represents a different prefix in the set $S$. The root represents the empty prefix $\varepsilon$. Vertex $u$ representing prefix $Y$ is a child of vertex $v$ representing prefix $X$, if and only if $Y = Xc$ for some character $c \in \Sigma$. The edge $(v,u)$ is then labeled $c$.
+
+  If $S$ is the set of all suffixes of a string $T$, the trie is called \defi{suffix trie}.
+\end{Definition}
+
+\begin{Example}
+  Figure~\ref{fig:trieExample} shows the suffix trie for the string \"banana\$\". The dollar sign \$ is a sentinal that does not appear elsewhere in the text. This guarantees, that no suffix is a prefix of another suffix and the suffix trie therefore has $n+1$ leaves.
+  \drawing{introduction/trieExample.tex}{Hallo}{trieExample}
+\end{Example}
