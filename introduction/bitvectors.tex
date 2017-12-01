@@ -1,0 +1,31 @@
+\section{Bitvectors}
+
+\begin{Definition}
+  A \defi{bitvector}{Bitvector} $B$ is an array of bits that are compactly stored. A bitvector supports the following operations:
+  \begin{itemize}
+    \item $\mathrm{access}(i)$ returns the $i$-th element in $B$.
+    \item $\mathrm{rank}(i)$ returns the number of set bits in the prefix $[0..i-1]$ of $B$.
+  \end{itemize}
+\end{Definition}
+
+\begin{Theorem}
+  The $\mathrm{rank}$-Operation on bitvectors can be done constant time and $o(n)$ additional space.\cite{Jacobson1989}
+\end{Theorem}
+
+\begin{Proof}
+  Let $B$ be a bitvector of length $n$. Precompute the following information:
+  \begin{enumerate}
+    \item Divide $B$ into \emph{superblocks} $SB_1, \ldots, SB_{\lceil \frac{n}{L} \rceil}$ of size $L$.
+    \item For each superblock $SB_j$ now store $\sum_{i=0}^{(j-1)L-1} B[i]$. This is the number of set bits in the first $j$ superblocks. For each superblock this needs $\mathcal{O}(\log n)$ bits of space.
+    \item Now further divide each superblock $B_j$ into blocks $B_1^j, \ldots, B_{\lceil \frac{L}{S} \rceil}^j$ of size $S$.
+    \item For each block $B_k^j$ of superblock $SB_j$ store $\sum_{i=(j-1)L}^{(j-1)L+kS-1} B[i]$. This is the number of set bits in the first $k$ blocks of superblock $SB_j$. For each block this needs $\mathcal{O}(\log L)$ bits.
+  \end{enumerate}
+  For a given $\mathrm{rank}(i)$ query we now calculate the corresponding superblock $SB_j$ and block $B_k$. We use the precomputed sums to get the number of set bits in all superblocks before $SB_j$ and all blocks before $B_k$. All thats missing now is the number of set bits in block $B_k$ until position $i$. If the blocks are small enough, this information can be precomputed efficiently for all possible blocks and positions (Four-Russians-Trick).
+
+  We still need to choose $L$ and $S$:
+  \begin{align}
+    L &= \log^2 n \\
+    S &= \frac{1}{2} \log n
+  \end{align}
+  The total amount of space needed is in $\mathcal{O}(\frac{n}{\log n} + \frac{n\log\log n}{\log n} + \sqrt{n}\log n\log\log n)$ bits.
+\end{Proof}
