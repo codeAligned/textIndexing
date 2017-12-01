@@ -1,8 +1,17 @@
-\documentclass{scrbook}
+\documentclass[oneside]{scrbook}
 
 % Font-/Inputencoding.
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+
+% Information for PDF file.
+\usepackage{hyperref}
+\hypersetup{
+  pdfauthor={Paul Jungeblut},
+  pdftitle={Text Indexing, Script/Summary},
+  pdfsubject={Text Indexing, Script/Summary},
+  pdfkeywords={Text Indexing, Lecture Notes, Script, Summary}
+}
 
 % Colors.
 \usepackage{color}
@@ -34,13 +43,26 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 
+% Disable indentation of new paragraphs.
+\usepackage{parskip}
+
 % TikZ.
 \usepackage{float}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 
+% Bibliography.
+\usepackage[style=numeric, backend=biber]{biblatex}
+\addbibresource{references.bib}
+
+% Index.
+\usepackage{makeidx}
+\makeindex
+
 % Layout for introducing terms.
-\newcommand{\defi}[1]{\emph{\textcolor{blue}{#1}}}
+% Parameter 1: The term to print.
+% Parameter 2: The term to put into the index.
+\newcommand{\defi}[2]{\emph{\textcolor{blue}{#1}}\index{#2}}
 
 % Oneliner to embed TikZ images.
 % Parameter 1: Path to the image.
@@ -56,5 +78,11 @@
 }
 
 \begin{document}
+  \pagenumbering{roman}
+  \tableofcontents
+  \newpage
+  \pagenumbering{arabic}
   \input{introduction/introduction.tex}
+  \printindex
+  \printbibliography
 \end{document}
