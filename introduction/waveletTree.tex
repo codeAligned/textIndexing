@@ -1,0 +1,28 @@
+\section{Wavelet Trees}
+
+\begin{Definition}
+  A \defi{wavelet tree}{Wavelet Tree} is a compact datastructure that stores a sequence $S$ generalizes the operations of a bitvector to an arbitrary alphabet.
+  \begin{itemize}
+    \item $\mathrm{access}(i)$ returns the $i$-th element of the sequence.
+    \item $\mathrm{rank}_q(i)$ returns the number of occurrences of $q$ in the prefix $S[0..i-1]$.
+    \item $\mathrm{select}_q(i)$ returns the position of the $i$-th occurrence of $q$ in $S$.
+  \end{itemize}
+
+  The root of the wavelet tree stores the whole sequence. Each vertex recursively divides its sequence to its two children. The left child contains the first half of the remaining alphabet, the right child contains the second half of the remaining alphabet. A bitvector in every vertex stores the corresponding child for each element.
+\end{Definition}
+
+\begin{Example}
+  Figure~\ref{fig:waveletTreeExample} shows the wavelet tree for the string "abracadabra".
+  \drawing{introduction/tikz/waveletTreeExample.tex}{The wavelet tree for the string "abracadabra".}{waveletTreeExample}
+\end{Example}
+
+\begin{Lemma}
+  A wavelet tree can be stored in $n\lceil\log\sigma\rceil$ bits space.
+\end{Lemma}
+
+\begin{Proof}
+  The wavelet tree has height $\lceil\log\sigma\rceil$ and stores $n$ bits on every layer (maybe even less on the last layer). Therefore $n\lceil\log\sigma\rceil$ bits are needed to store the bitvectors. A wavelet tree can be implemented fully via bitvectors and does not need any pointers.
+\end{Proof}
+
+% TODO (pjungeblut): Describe implementation via bitvectors.
+% TODO (pjungeblut): Describe implementation of operations.
