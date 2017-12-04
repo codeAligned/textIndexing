@@ -70,7 +70,7 @@
 % Oneliner to embed TikZ images.
 % Parameter 1: Path to the image.
 % Parameter 2: Caption.
-% Parameter 3: The name of the label.
+% Parameter 3: The name of the label ("fig:" will be added as a prefix).
 \newcommand{\drawing}[3]{
   \begin{figure}[htbp]
     \centering
@@ -78,6 +78,29 @@
     \caption{#2}
     \label{fig:#3}
   \end{figure}
+}
+
+% Pseudocode.
+% Parameter 1: Name of the algorithm.
+% Parameter 2: The name of the label ("alg:" will be added as a prefix).
+% Parameter 3: Input description.
+% Parameter 4: Output description.
+\newenvironment{pseudocode}[4]
+{
+  \begin{algorithm}[H]
+    \caption{#1}
+    \label{alg:#2}
+    \setlength{\tabcolsep}{0mm}
+    \begin{tabularx}{\linewidth}{>{\bfseries}p{20mm}X}
+      Eingabe & #3 \\
+      Ausgabe & #4 \\
+      \midrule
+    \end{tabularx}
+    \begin{algorithmic}[1]
+}
+{
+    \end{algorithmic}
+  \end{algorithm}
 }
 
 \begin{document}

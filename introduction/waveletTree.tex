@@ -1,7 +1,7 @@
 \section{Wavelet Trees}
 
 \begin{Definition}
-  A \defi{wavelet tree}{Wavelet Tree} is a compact datastructure that stores a sequence $S$ generalizes the operations of a bitvector to an arbitrary alphabet.
+  A \defi{wavelet tree}{Wavelet Tree} is a compact datastructure that stores a sequence $S$ and generalizes the operations of a bitvector to an arbitrary alphabet.
   \begin{itemize}
     \item $\mathrm{access}(i)$ returns the $i$-th element of the sequence.
     \item $\mathrm{rank}_q(i)$ returns the number of occurrences of $q$ in the prefix $S[0..i-1]$.
@@ -11,18 +11,56 @@
   The root of the wavelet tree stores the whole sequence. Each vertex recursively divides its sequence to its two children. The left child contains the first half of the remaining alphabet, the right child contains the second half of the remaining alphabet. A bitvector in every vertex stores the corresponding child for each element.
 \end{Definition}
 
-\begin{Example}
-  Figure~\ref{fig:waveletTreeExample} shows the wavelet tree for the string "abracadabra".
-  \drawing{introduction/tikz/waveletTreeExample.tex}{The wavelet tree for the string "abracadabra".}{waveletTreeExample}
-\end{Example}
-
 \begin{Lemma}
   A wavelet tree can be stored in $n\lceil\log\sigma\rceil$ bits space.
 \end{Lemma}
 
 \begin{Proof}
-  The wavelet tree has height $\lceil\log\sigma\rceil$ and stores $n$ bits on every layer (maybe even less on the last layer). Therefore $n\lceil\log\sigma\rceil$ bits are needed to store the bitvectors. A wavelet tree can be implemented fully via bitvectors and does not need any pointers.
+  The wavelet tree has height $\lceil\log\sigma\rceil$ and stores $n$ bits on every layer (maybe even less on the last layer). Therefore $n\lceil\log\sigma\rceil$ bits are needed to store the bitvectors. A wavelet tree can be implemented fully via bitvectors and does not need any pointers. This will be demonstrated in more detail below.
 \end{Proof}
 
-% TODO (pjungeblut): Describe implementation via bitvectors.
+\begin{Example}
+  \label{exp:waveletTree}
+  Figure~\ref{fig:waveletTreeExample} shows the wavelet tree for the string "abracadabra". By concatenating the bitvectors in each vertex in level order from left to right, we fully describe the wavelet tree. The bitvector describing this wavelet tree is \texttt{00100010010|00010000|101|0100010}, where the vertical lines show the borders between consecutive vertices. They do not need to be stored, because all layers (except maybe the last layer) contain exactly $n$ bits.
+  \drawing{introduction/tikz/waveletTreeExample.tex}{The wavelet tree for the string "abracadabra".}{waveletTreeExample}
+\end{Example}
+
+When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:waveletTree}, each vertex can be described by two indices giving the position of the bitvector of the vertex in $B$. Algorithm~\ref{alg:waveletTreeLevel} shows how to get the level of a vertex $v$ of the wavelet tree. This just uses the fact, that every level contains $n$ bits. Algorithm~\ref{alg:waveletTreeSize} just calculates the length of the string stored in the given vertex. Algorithm~\ref{alg:waveletTreeLeftChild} and Algorithm~\ref{alg:waveletTreeRightChild} return the indices for the left and the right child of the given vertex. Assuming that we can execute the rank queries in constant time (Theorem~\ref{thm:bitvectorRankConstantTime}), they both run in constant time. It is also possible to implement a $\mathrm{parent}$-function, but this needs additional information, such as whether the current vertex is a left or a right child of its parent.
+
+\begin{pseudocode}
+  {$\mathrm{level}$}
+  {waveletTreeLevel}
+  {Vertex $v=[l,r]$ of the wavelet tree.}
+  {Level $l$ that $v$ is on.}
+  \RETURN $\left\lceil \frac{l}{n} \right\rceil$
+\end{pseudocode}
+
+\begin{pseudocode}
+  {$\mathrm{size}$}
+  {waveletTreeSize}
+  {Vertex $v=[l,r]$ of the wavelet tree.}
+  {The number of elements in this vertex.}
+  \RETURN $r - l + 1$
+\end{pseudocode}
+
+\begin{pseudocode}
+  {$\mathrm{left\_child}$}
+  {waveletTreeLeftChild}
+  {Vertex $v=[l,r]$ of the wavelet tree.}
+  {The left child $[l',r']$.}
+  \STATE $l' \gets l + n$
+  \STATE $r' \gets l' + \mathrm{size}(v) - (\mathrm{rank}(r + 1) - \mathrm{rank}(l))$
+  \RETURN $[l',r']$
+\end{pseudocode}
+
+\begin{pseudocode}
+  {$\mathrm{right\_child}$}
+  {waveletTreeRightChild}
+  {Vertex $v=[l,r]$ of the wavelet tree.}
+  {The right child $[l',r']$.}
+  \STATE $l' \gets l' + \mathrm{size}(v) - (\mathrm{rank}(r + 1) - \mathrm{rank}(l)) + 1$
+  \STATE $r' \gets r + n$
+  \RETURN $[l',r']$
+\end{pseudocode}
+
 % TODO (pjungeblut): Describe implementation of operations.
