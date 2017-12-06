@@ -1,58 +1,5 @@
 \chapter{Suffix Arrays}
 
-\begin{Definition}
-  The \defi{suffix array}{Suffix Array} $SA$ of a string $T$ gives the sorted order of all suffixes of $T$. Element $SA[i]$ stores the index of the $i$-th lexicographically smallest suffix of $T$.
-\end{Definition}
-
-\begin{Example}
-  Consider the string $T=$"abracadabrabarbara\$". Table~\ref{tbl:suffixArrayExample} shows the suffix array for $T$. Note that the dollar sign \$ is lexicographically smaller than any other character. This guarantees that suffixes which are a prefix of other suffixes appear first.
-  \begin{table}[htbp]
-    \centering
-    \begin{tabular}{ccl}
-      \toprule
-      $i$  & $SA[i]$ & $T[SA[i]..n-1]$ \\
-      \midrule
-      $0$  & $18$    & \$ \\
-      $1$  & $17$    & a\$ \\
-      $2$  & $10$    & abarbara\$ \\
-      $3$  & $7$     & abrabarbara\$ \\
-      $4$  & $0$     & abracadabrabarbara\$ \\
-      $5$  & $3$     & acadabrabarbara\$ \\
-      $6$  & $5$     & adabrabarbara\$ \\
-      $7$  & $15$    & ara\$ \\
-      $8$  & $12$    & arbara\$ \\
-      $9$  & $14$    & bara\$ \\
-      $10$ & $11$    & barbara\$ \\
-      $11$ & $8$     & brabarbara\$ \\
-      $12$ & $1$     & bracadabrabarbara\$ \\
-      $13$ & $4$     & cadabrabarbara\$ \\
-      $14$ & $6$     & dabrabarbara\$ \\
-      $15$ & $16$    & ra\$ \\
-      $16$ & $9$     & rabarbara\$ \\
-      $17$ & $2$     & racadabrabarbara\$ \\
-      $18$ & $13$    & rbara\$ \\
-      \bottomrule
-    \end{tabular}
-    \caption{The suffix array for "abracadabrabarbara\$".}
-    \label{tbl:suffixArrayExample}
-  \end{table}
-\end{Example}
-
-\begin{Lemma}
-  We can search for all occurrences of a string $S$ in $T$ using the suffix array $SA$ over $T$ in time $\mathcal{O}(m\log n)$, where $n = \vert T \vert$ and $m = \vert S \vert$. This is knows as \defi{forward search}{Forward Search}.
-\end{Lemma}
-
-\begin{Proof}
-  We find the first suffix in $SA$ greater or equal to $S$ and the first suffix in $T$ bigger than $S$. Assume these are at positions $i$ and $j$ with $i \leq j$. Then we have $j - i$ occurrences of $S$ in $T$ and the corresponding positions are stored in $SA[i], \ldots, SA[j-1]$. Both $i$ and~$j$ can be found using a binary search, since the suffix array is sorted. The binary search needs $\mathcal{O}(\log n)$ steps and each steps does a string comparison in $\mathcal{O}(m)$ time.
-\end{Proof}
-
-\begin{Example}
-  Consider strings $T=$"abracadabrabarbara\$" and $S=$"bar". How often and where does~$S$ appear in $T$?
-
-  Table~\ref{tbl:suffixArrayExample} shows the suffix array for $T$. By binary search we find $i = 9$ and $j = 11$. So~$T[SA[i]..n-1]$ is the smallest suffix greater or equal than "bar" and $T[SA[j]..n-1]$ is the smallest suffix greater than "bar". We see that "bar" appears $j-i=11-9=2$ times. The occurrences are at positions $SA[9]=14$ and $SA[10]=11$.
-\end{Example}
-
-The suffix array itself needs $n\log n$ bits of space. But to work with it, we additionally need to store the text itself, which needs another $n\log\sigma$ bits of space. In total this results in a space of $n\log n + n\log\sigma$ bits.
-
+\input{suffixArrays/introduction.tex}
 % TODO (pjungeblut): Describe FM-index and the necessary BWT.
 % TODO (pjungeblut): Describe how a self index can be obtained from the FM-index.
