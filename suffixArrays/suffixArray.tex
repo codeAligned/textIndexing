@@ -38,9 +38,9 @@
   \end{table}
 \end{Example}
 
-\begin{Lemma}
+\begin{Theorem}
   We can search for all occurrences of a string $S$ in $T$ using the suffix array $SA$ over $T$ in time $\mathcal{O}(m\log n)$, where $n = \vert T \vert$ and $m = \vert S \vert$. This is knows as \defi{forward search}{Forward Search}.
-\end{Lemma}
+\end{Theorem}
 
 \begin{Proof}
   We find the first suffix in $SA$ greater or equal to $S$ and the first suffix in $T$ bigger than $S$. Assume these are at positions $i$ and $j$ with $i \leq j$. Then we have $j - i$ occurrences of $S$ in $T$ and the corresponding positions are stored in $SA[i], \ldots, SA[j-1]$. Both $i$ and~$j$ can be found using a binary search, since the suffix array is sorted. The binary search needs $\mathcal{O}(\log n)$ steps and each steps does a string comparison in $\mathcal{O}(m)$ time.
