@@ -1,6 +1,4 @@
-\section{FM-Index}
-
-\subsection{Burrows-Wheeler-Transformation}
+\section{Burrows-Wheeler-Transformation}
 
 \begin{Definition}
   The \defi{Burrows-Wheeler-Transformation}{Burrows-Wheeler-Transformation} $BWT$ rearranges the characters of a string $T$ into runs of similar characters which makes it easier to compress.
@@ -45,3 +43,11 @@ The BWT needs $n\log\sigma$ bits of space if it is stored uncompressed. The idea
     \label{tbl:burrowsWheelerTransformationExample}
   \end{table}
 \end{Example}
+
+\begin{Theorem}
+  We can search for all occurrences of a string $S$ in $T$ using the suffix array $SA$ and Burrwos-Wheeler-Transform $BWT$ over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is knows as \defi{backward search}{Backward Search}.
+\end{Theorem}
+
+\begin{Proof}
+  Bla blub.
+\end{Proof}
