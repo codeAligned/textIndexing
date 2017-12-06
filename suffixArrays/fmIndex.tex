@@ -1,0 +1,47 @@
+\section{FM-Index}
+
+\subsection{Burrows-Wheeler-Transformation}
+
+\begin{Definition}
+  The \defi{Burrows-Wheeler-Transformation}{Burrows-Wheeler-Transformation} $BWT$ rearranges the characters of a string $T$ into runs of similar characters which makes it easier to compress.
+  \begin{equation}
+    BWT[i] := T[SA[i] - 1 \mod n]
+  \end{equation}
+  Intuitively, $BWT[i]$ is the character preceding the $i$-th suffix (or the last character for the zeroth suffix).
+\end{Definition}
+
+The BWT needs $n\log\sigma$ bits of space if it is stored uncompressed. The idea behind the BWT was better compression: Compressed size is $nH_k(T)$ bits, where $H_k(T)$ is the $k-th$ order entropy of the text $T$.
+
+\begin{Example}
+  Table~\ref{tbl:burrowsWheelerTransformationExample} shows the suffix array for the string "abracadabrabarbara\$" together with the Burrows-Wheeler-Transformation of it.
+  \begin{table}[htbp]
+    \centering
+    \begin{tabular}{cccl}
+      \toprule
+      $i$  & $SA[i]$ & $BWT[i]$ & $T[SA[i]..n-1]$ \\
+      \midrule
+      $0$  & $18$    & a        & \$ \\
+      $1$  & $17$    & r        & a\$ \\
+      $2$  & $10$    & r        & abarbara\$ \\
+      $3$  & $7$     & d        & abrabarbara\$ \\
+      $4$  & $0$     & \$       & abracadabrabarbara\$ \\
+      $5$  & $3$     & r        & acadabrabarbara\$ \\
+      $6$  & $5$     & c        & adabrabarbara\$ \\
+      $7$  & $15$    & b        & ara\$ \\
+      $8$  & $12$    & b        & arbara\$ \\
+      $9$  & $14$    & r        & bara\$ \\
+      $10$ & $11$    & a        & barbara\$ \\
+      $11$ & $8$     & a        & brabarbara\$ \\
+      $12$ & $1$     & a        & bracadabrabarbara\$ \\
+      $13$ & $4$     & a        & cadabrabarbara\$ \\
+      $14$ & $6$     & a        & dabrabarbara\$ \\
+      $15$ & $16$    & a        & ra\$ \\
+      $16$ & $9$     & b        & rabarbara\$ \\
+      $17$ & $2$     & b        & racadabrabarbara\$ \\
+      $18$ & $13$    & a        & rbara\$ \\
+      \bottomrule
+    \end{tabular}
+    \caption{The suffix array for "abracadabrabarbara\$".}
+    \label{tbl:burrowsWheelerTransformationExample}
+  \end{table}
+\end{Example}
