@@ -12,7 +12,7 @@ The BWT needs $n\log\sigma$ bits of space if it is stored uncompressed. The idea
 
 \begin{Example}
   Table~\ref{tbl:burrowsWheelerTransformationExample} shows the suffix array for the string "abracadabrabarbara\$" together with the Burrows-Wheeler-Transformation of it.
-  \begin{table}[htbp]
+  \begin{table}[htb]
     \centering
     \begin{tabular}{cccl}
       \toprule
@@ -45,9 +45,76 @@ The BWT needs $n\log\sigma$ bits of space if it is stored uncompressed. The idea
 \end{Example}
 
 \begin{Theorem}
-  We can search for all occurrences of a string $S$ in $T$ using the suffix array $SA$ and Burrwos-Wheeler-Transform $BWT$ over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is knows as \defi{backward search}{Backward Search}.
+  We can search for all occurrences of a string $S$ in $T$ using the suffix array $SA$ and the Burrwos-Wheeler-Transform $BWT$ over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is knows as \defi{backward search}{Backward Search}.
 \end{Theorem}
 
 \begin{Proof}
-  Bla blub.
+  We need another array $C$ storing for each $c \in \Sigma$ the position of the first suffix in~$SA$ starting with $c$. The numbers in $C$ are sorted the same way as the characters in~$\Sigma$. Array $C$ needs another $\sigma\log n$ bits of space.
+
+  We search for all suffixes of $T$ starting with $S$. They form a consecutive interval in the suffix array $SA$ of $T$. We start with the full interval $[sp_0,ep_0]=[0,n-1]$ corresponding to all suffixes of $T$ starting with the empty suffix $\varepsilon$ of $S$. In step $i$ ($1 \leq i \leq m$), we will shrink the interval to $[sp_i,ep_i]$ corresponding to all suffixes of $T$ starting with the last $i$ characters of $S$ (this is why its called backward search). The new interval $[sp_{i+1},ep_{i+1}]$ is defined as
+  \begin{align}
+    sp_{i+1} &= C[c] + \mathrm{rank}_c(sp_i, BWT)
+    \label{eq:backwardSearchStartPos} \\
+    ep_{i+1} &= C[c] + \mathrm{rank}_c(ep_i + 1, BWT) - 1
+    \label{eq:backwardSearchEndPos}
+  \end{align}
+  where $c$ is the $(i+1)$-th last character of $S$. Both operations can be done in $\mathcal{O}(\log\sigma)$ using a wavelet tree over the $BWT$ array. The search needs $m$ steps, so the total runtime is in $\mathcal{O}(m\log\sigma)$.
+
+  The interval given by $[sp_m,ep_m]$ in the suffix array corresponds to all occurrences of $S$ in $T$ and the positions are $SA[sp_m], \ldots, SA[ep_m]$.
 \end{Proof}
+
+The intuition behind Equation~\ref{eq:backwardSearchStartPos} and~\ref{eq:backwardSearchEndPos} is the following: $C[c]$ gives the start position of all suffixes in $SA$ starting with the $(i+1)$-th character $c$ of $S$. But of course, only some continuous subsequence of them also starts with the whole last $i+1$ characters of $S$. This subsequence is calculated with the $\mathrm{rank}_c$ queries: The $BWT$ tells us, which of the suffixes in $[sp_i,ep_i]$ are preceded with $c$ (the $(i+1)$-th last character of $S$). To now calculate $sp_{i+1}$ from $i$, we need to know, how many suffixes starting with $c$ are lexicographically smaller than the $c$-preceded suffixes in $[sp_i,ep_i]$. The answer is just $\mathrm{rank}_c(sp_i, BWT)$ as in Equation~\ref{eq:backwardSearchStartPos}. For $ep_{i+1}$ Equation~\ref{eq:backwardSearchEndPos} additionally counts the number of suffixes of $T$ in $[sp_i,ep_i]$ preceded by $c$.
+
+\begin{Example}
+  We will again search for string $S=$"bar" in the text $T=$"abracadabrabarbara\$", this time using backward search. The suffix array and Burrows-Wheeler-Transformation of $T$ is given in Table~\ref{tbl:burrowsWheelerTransformationExample}.
+
+  Array $C$ is given by the following Table~\ref{tbl:backwardSearchCExample} for text $T$.
+  \begin{table}[htb]
+    \centering
+    \begin{tabular}{cccccc}
+      \toprule
+      \$ & a & b & c & d & r \\
+      \midrule
+      0 & 1 & 9 & 13 & 14 & 15 \\
+      \bottomrule
+    \end{tabular}
+    \caption{$C$-array for the string "abracadabrabarbara\$".}
+    \label{tbl:backwardSearchCExample}
+  \end{table}
+
+  Initially $[sp_0,ep_0]=[0,n-1]$ is the whole set of all suffixes of $T$. They all match the empty suffix $\varepsilon$ of $S$. We will now go through the different steps of the backward search, the red part always highlights the current suffix of $S$ matched with the suffixes in $SA$.
+  \begin{enumerate}
+    \item Step 1 ("ba{\color{red}r}"):
+    \begin{align*}
+      sp_1 &= C[r] + \mathrm{rank}_r(sp_0, BWT) \\
+           &= 15 + \mathrm{rank}_r(0, BWT) \\
+           &= 15 + 0 = 15 \\
+      ep_1 &= C[r] + \mathrm{rank}_r(ep_0 + 1, BWT) - 1 \\
+           &= 15 + \mathrm{rank}_r(19, BWT) \\
+           &= 15 + 4 - 1 = 18
+    \end{align*}
+    The suffixes starting with "r" start at position $C[r]=15$ in the suffix array and there is a total of four of them, so $[sp_1,ep_1]=[15,18]$.
+
+    \item Step 2 ("b{\color{red}ar}"):
+    \begin{align*}
+      sp_2 &= C[a] + \mathrm{rank}_a(sp_1, BWT) \\
+           &= 1 + \mathrm{rank}_a(15, BWT) \\
+           &= 1 + 6 = 7 \\
+      ep_2 &= C[a] + \mathrm{rank}_a(ep_1 + 1, BWT) - 1 \\
+           &= 1 + \mathrm{rank}_a(19, BWT) \\
+           &= 1 + 8 - 1 = 8
+    \end{align*}
+    Of the four suffixes starting with "r" found in step 1, two are preceded by "a" (at position $15$ and $18$ in the suffix array). Further there is $\mathrm{rank}_a(15, BWT)=6$ more suffixes preceded by "a" not starting with $r$ that are lexicographically smaller, so the new interval becomes $[sp_2,ep_2]=[7,8]$.
+
+    \item Step 3 ("{\color{red}bar}"):
+    \begin{align*}
+      sp_3 &= C[b] + \mathrm{rank}_b(sp_2, BWT) \\
+           &= 9 + \mathrm{rank}_b(7, BWT) \\
+           &= 9 + 0 = 9 \\
+      ep_3 &= C[b] + \mathrm{rank}_b(ep_2 + 1, BWT) - 1 \\
+           &= 9 + \mathrm{rank}_b(8, BWT) \\
+           &= 9 + 2 - 1 = 10
+    \end{align*}
+    Both suffixes starting with "ar" in $SA$ are preceded with "b" and there is no other, smaller suffixes in $SA$ preceded by "b", so the two suffixes starting with "bar" are given by $[sp_3,ep_3]=[9,10]$.
+  \end{enumerate}
+\end{Example}
