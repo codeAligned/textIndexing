@@ -1,0 +1,32 @@
+\section{Self Index}
+
+The suffix array together with the Burrows-Wheeler-Transformation allowed to count the occurrences of a pattern $S$ in a string $T$ in $\mathcal{O}(m\log\sigma)$. The original text was not needed at all. But when we want to print the actual occurrences, we need to access the text $T$ and therefore store it together with the index. We will now see, how we can code the text into the index.
+
+\begin{Definition}
+  A \defi{self index}{Self Index} is an index that allows fast pattern matching and efficient reconstruction of any substring of the original text.
+\end{Definition}
+
+\begin{Definition}
+  Let $j = SA[i]$ be the starting position of the $i$-th smallest suffix. Then \defi{$LF[i]$}{LF-Mapping} is defined as $j-1$, the suffix before it. $LF$ can be calculated from the Burrows-Wheeler-Transformation:
+  \begin{align}
+    LF[i] := C[BWT[i]] + \mathrm{rank}_{BWT[i]}(i, BWT)
+    \label{eq:lfMapping}
+  \end{align}
+\end{Definition}
+
+Equation~\ref{eq:lfMapping} works as follows: We know that $BWT[i]$ is the character preceding the suffix at position $i$. So the previous suffix must be in the continuous range of suffixes in the suffix array starting with $BWT[i]$. This range begins at index $C[BWT[i]]$. Then $\mathrm{rank}_{BWT[i]}(i, BWT)$ calculates the offset in this range by just counting how many suffixes also start with $BWT[i]$ and are lexicographically smaller.
+
+\begin{Theorem}
+  The Burrows-Wheeler-Transformation and the $LF$-array are enough information to decode the whole text $T$.
+\end{Theorem}
+
+\begin{Proof}
+  We will proof this by induction.
+
+  \textbf{Base:} We know that the last suffix is the dollar sign "\$" and that it is stored at index $0$ in the suffix array $SA$, because \$ is lexicographically smaller than all other characters of our alphabet.
+
+  \textbf{Step:} Assume we know some character $c$ and the index $i$, where the suffix of our text starting at $c$ is in the suffix array. Then the Burrows-Wheeler-Transformation $BWT[i]$ already gives us the character preceding $c$. To be able to pull of the same trick again, we still need the position of the suffix preceding the one starting at $c$. This is just how $LF[i]$ was defined.
+\end{Proof}
+
+% TODO (pjungeblut): Give some intuition why the definition of LF looks like
+%                    it does. 
