@@ -6,7 +6,7 @@
 
 \begin{Example}
   Figure~\ref{fig:suffixTreeExample} shows the suffix tree for the string "banana\$". It contains only $11$ vertices compared to the $23$ vertices of the suffix trie.
-  \drawing{introduction/tikz/suffixTreeExample.tex}{The suffix tree for the string "banana\$".}{suffixTreeExample}
+  \drawing{basicDatastructures/tikz/suffixTreeExample.tex}{The suffix tree for the string "banana\$".}{suffixTreeExample}
 \end{Example}
 
 The suffix array can be constructed in time $\mathcal{O}(n)$ with algorithms by \textsc{Weiner}\cite{Weiner1973}, \textsc{McCreight}\cite{McCreight1976} or \textsc{Ukkonen}\cite{Ukkonen1995}. It needs $\mathcal{O}(n\log n + n\log \sigma)$ bits. The first summand is the space needed for the pointers to the children and the indices stored in the leaves. The second summand is the space needed for the edge labels. To achieve this space, the edge labels must not be stored explicitly. Instead we can store pointers to the first and last position of the label in the text.
