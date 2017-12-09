@@ -7,16 +7,23 @@ The suffix array together with the Burrows-Wheeler-Transformation allowed to cou
 \end{Definition}
 
 \begin{Definition}
-  Let $j = SA[i]$ be the starting position of the $i$-th smallest suffix. Then \defi{$LF[i]$}{LF-Mapping} is defined as $j-1$, the suffix before it. $LF$ can be calculated from the Burrows-Wheeler-Transformation:
+  Let $j = SA[i]$ be the starting position of the $i$-th smallest suffix. Then \defi{$LF[i]$}{LF-Mapping} is defined as the position of $j-1$ in the suffix array.
+\end{Definition}
+
+\begin{Theorem}
+  $LF$ can be calculated from the Burrows-Wheeler-Transformation:
   \begin{align}
     LF[i] := C[BWT[i]] + \mathrm{rank}_{BWT[i]}(i, BWT)
     \label{eq:lfMapping}
   \end{align}
-\end{Definition}
+\end{Theorem}
 
-Equation~\ref{eq:lfMapping} works as follows: We know that $BWT[i]$ is the character preceding the suffix at position $i$. So the previous suffix must be in the continuous range of suffixes in the suffix array starting with $BWT[i]$. This range begins at index $C[BWT[i]]$. Then $\mathrm{rank}_{BWT[i]}(i, BWT)$ calculates the offset in this range by just counting how many suffixes also start with $BWT[i]$ and are lexicographically smaller.
+\begin{Proof}
+  We know that $BWT[i]$ is the character preceding the suffix at position $i$ in the suffix array. So the previous suffix must be in the continuous range of suffixes in the suffix array starting with $BWT[i]$. This range begins at index $C[BWT[i]]$. Then $\mathrm{rank}_{BWT[i]}(i, BWT)$ calculates the offset in this range by just counting how many suffixes also start with $BWT[i]$ and are lexicographically smaller.
+\end{Proof}
 
 \begin{Theorem}
+  \label{thm:lfMapping}
   The Burrows-Wheeler-Transformation and the $LF$-array are enough information to decode the whole text $T$.
 \end{Theorem}
 
@@ -28,5 +35,27 @@ Equation~\ref{eq:lfMapping} works as follows: We know that $BWT[i]$ is the chara
   \textbf{Step:} Assume we know some character $c$ and the index $i$, where the suffix of our text starting at $c$ is in the suffix array. Then the Burrows-Wheeler-Transformation $BWT[i]$ already gives us the character preceding $c$. To be able to pull of the same trick again, we still need the position of the suffix preceding the one starting at $c$. This is just how $LF[i]$ was defined.
 \end{Proof}
 
-% TODO (pjungeblut): Give some intuition why the definition of LF looks like
-%                    it does. 
+\begin{Definition}
+  The $F$-array contains the first characters of each suffix of text $T$ in the order they appear in the suffix array.
+  \begin{align}
+    F[i] := T[SA[i]]
+  \end{align}
+\end{Definition}
+
+\begin{Definition}
+  The inverse of $LF$ is called \defi{$\Psi$}{$\Psi$-Mapping} and maps $j = SA[i]$, the position of the $i$-th smallest suffix, to the position of $j+1$ in the suffix array.
+\end{Definition}
+
+\begin{Theorem}
+  For a text $T$ we get
+  \begin{align}
+    \Psi[i] := \mathrm{select}_{F[i]}(\mathrm{rank}_{F[i]}(i, F), BWT)
+    \text{.}
+  \end{align}
+\end{Theorem}
+
+\begin{Proof}
+  If $j = SA[i]$ is the position of the $i$-th lexicographically smallest suffix, then the suffix starting at position $j+1$ is preceded by $F[i]$. Therefore we know the Burrows-Wheeler-Transformation $BWT[\Psi[i]] = F[i]$. This is why we can calculate $\Psi$ by a $\mathrm{select}$-query on the $BWT$-array. The inner query $\mathrm{rank}_{F[i]}(i, F)$ determines which occurrence of $F[i]$ in the $BWT$-array we are interested in. If the suffix at position $i$ in the suffix array is the $k$-th smallest starting with $F[i]$, then we look for the $k$-th occurrence of $F[i]$ in the $BWT$-array.
+\end{Proof}
+
+$\Psi$ allows to reconstruct the text from the front in contrast to $LF$, which can reconstruct it from the back as described in Theorem~\ref{thm:lfMapping}.
