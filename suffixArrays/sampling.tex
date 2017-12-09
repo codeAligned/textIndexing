@@ -21,6 +21,7 @@ Instead of storing the complete suffix array we can only store a subset of the v
 \end{Definition}
 
 No matter which of the above sampling strategies above is used, the code in Algorithm~\ref{alg:sampledSuffixArrayAccess} allows to access arbitrary elements of the suffix array.
+
 \begin{pseudocode}
   {$\mathrm{access}$}
   {sampledSuffixArrayAccess}
@@ -33,6 +34,14 @@ No matter which of the above sampling strategies above is used, the code in Algo
   \ENDWHILE
   \RETURN $SA'[rank_1(i, B)] + k$
 \end{pseudocode}
+
+\begin{Theorem}
+  If SA-order-sampling is used, the $\mathrm{access}$-method in Algorithm~\ref{alg:sampledSuffixArrayAccess} takes at most $\mathcal{O}(s\cdot t_{LF})$ time, where $t_{LF}$ is the time for an access in the $LF$ array.
+\end{Theorem}
+
+\begin{Proof}
+  Assume we want to access index $i$ of the suffix array $SA$ and let $j = SA[i]$. Each $i \leftarrow LF[i]$ call executed in Algorithm~\ref{alg:sampledSuffixArrayAccess} $j$ becomes $j-1$, so after at most $s - 1$ iterations $j - k = SA[i]$ is divisible by $s$ and therefore sampled. We can return $j - k + k = j$.
+\end{Proof}
 
 % TODO (pjungeblut): Describe the better SA sampling for suffix arrays.
 %                    (Project 1, Exercise 2).
