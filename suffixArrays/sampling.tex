@@ -48,7 +48,7 @@ No matter which of the above sampling strategies above is used, the code in Algo
 \end{Theorem}
 
 \begin{Proof}
-  The sampled suffix array has $\frac{n}{s}$ elements, each an integer from $[0,n]$. The additional $2n$ bits are $n$-bit bitvector $B$ and the overhead to allow $\mathrm{rank}$-operations in constant time.
+  The sampled suffix array has $\frac{n}{s}$ elements, each an integer from $[0,n-1]$. The additional $2n$ bits are $n$-bit bitvector $B$ and the overhead to allow $\mathrm{rank}$-operations in constant time.
 
   The necessary observation to reduce the space needed is that each sampled element $SA[i]$ is a multiple of the sampling parameter $s$. So instead of \begin{align}
     SA'[\mathrm{rank}_1(i, B)] := SA[i]
@@ -61,6 +61,37 @@ No matter which of the above sampling strategies above is used, the code in Algo
   The access operation stays the same, instead of the return call in the last line: We need to multiply the value read from $SA'$ by $s$.
 \end{Proof}
 
-% TODO (pjungeblut): Describe ISA sampling. (Project 1, Exercise 3)
+\begin{Theorem}
+  The inverse suffix array $ISA$ can be sampled in $\frac{n}{s}\log n$ bits space using an array with $\frac{n}{s}$ elements and allowing to access arbitrary elements of $ISA$ in time $\mathcal{O}(s\cdot t_{LF})$.
+\end{Theorem}
+
+\begin{Proof}
+  $ISA[i]$ gives the lexicographical rank of the $i$-th suffix. Therefore
+  \begin{align}
+    LF[ISA[i]] = ISA[(i-1) \mod n]
+    \text{.}
+  \end{align}
+  By induction we get
+  \begin{align}
+    LF^k[ISA[i]] = ISA[(i - k) \mod n]
+    \text{.}
+  \end{align}
+  We now choose a sampling parameter $s$ and allocate an array $ISA'$ with $\frac{n}{s}$ elements. For every $i \equiv 0 \mod s$ we store
+  \begin{align}
+    ISA'[i/s] = ISA[i]
+    \text{.}
+  \end{align}
+  To access $ISA[i]$ for some $i$ we can use the code from Algorithm~\ref{alg:sampledInverseSuffixArrayAccess}.
+  \begin{pseudocode}
+    {$\mathrm{access}$}
+    {sampledInverseSuffixArrayAccess}
+    {Index $i$ to access.}
+    {Value of $ISA[i]$.}
+    \STATE $idx \gets \lceil \frac{i}{s} \rceil$
+    \STATE $diff \gets idx - i$
+    \RETURN $LF^{diff}[ISA'[idx]]$
+  \end{pseudocode}
+\end{Proof}
+
 % TODO (pjungeblut): Compare SA-order-sampling and text-order-sampling.
 %                    (Project 2, Exercise 1)
