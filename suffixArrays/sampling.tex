@@ -43,8 +43,24 @@ No matter which of the above sampling strategies above is used, the code in Algo
   Assume we want to access index $i$ of the suffix array $SA$ and let $j = SA[i]$. Each $i \leftarrow LF[i]$ call executed in Algorithm~\ref{alg:sampledSuffixArrayAccess} $j$ becomes $j-1$, so after at most $s - 1$ iterations $j - k = SA[i]$ is divisible by $s$ and therefore sampled. We can return $j - k + k = j$.
 \end{Proof}
 
-% TODO (pjungeblut): Describe the better SA sampling for suffix arrays.
-%                    (Project 1, Exercise 2).
+\begin{Theorem}
+  SA-order-sampling as described needs at most $\frac{n}{s}\log n + 2n$ bits space. This can be improved to $\frac{n}{s}\log\frac{n}{s} + 2n$ bits, with the $\mathrm{access}$-operation still needing time in $\mathcal{O}(s\cdot t_{LF})$.
+\end{Theorem}
+
+\begin{Proof}
+  The sampled suffix array has $\frac{n}{s}$ elements, each an integer from $[0,n]$. The additional $2n$ bits are $n$-bit bitvector $B$ and the overhead to allow $\mathrm{rank}$-operations in constant time.
+
+  The necessary observation to reduce the space needed is that each sampled element $SA[i]$ is a multiple of the sampling parameter $s$. So instead of \begin{align}
+    SA'[\mathrm{rank}_1(i, B)] := SA[i]
+  \end{align}
+  we can write
+  \begin{align}
+    SA'[\mathrm{rank}_1(i, B)] := \frac{SA[i]}{s}
+    \text{.}
+  \end{align}
+  The access operation stays the same, instead of the return call in the last line: We need to multiply the value read from $SA'$ by $s$.
+\end{Proof}
+
 % TODO (pjungeblut): Describe ISA sampling. (Project 1, Exercise 3)
 % TODO (pjungeblut): Compare SA-order-sampling and text-order-sampling.
 %                    (Project 2, Exercise 1)
