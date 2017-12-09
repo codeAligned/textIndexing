@@ -1,0 +1,41 @@
+\section{Sampling}
+
+Instead of storing the complete suffix array we can only store a subset of the values to save space.
+
+\begin{Definition}
+  Fix a sampling parameter $s$ and add a bitvector $B$ of length $n$ with $B[i] = 1$ if and only if $SA[i] \equiv 0 \mod s$. Store exactly those elements of $SA$ in another array $SA'$ of size $\lceil \frac{n}{s} \rceil$, the \defi{sampled suffix array}{Sampled Suffix Array}. For all $i$ with $B[i] = 1$, we get
+  \begin{align}
+    SA'[\mathrm{rank}_1(i, B)] := SA[i]
+    \text{.}
+  \end{align}
+  This is known as \defi{SA-order-sampling}{SA-Order-Sampling}.
+\end{Definition}
+
+\begin{Definition}
+  Fix a sampling parameter $s$. Store exactly those elements $SA[i]$ with $i \equiv 0 \mod s$ in another array $SA'$ of size $\lceil \frac{n}{s} \rceil$. We get
+  \begin{align}
+    SA'[i/s] := SA[i]
+    \text{.}
+  \end{align}
+  This is known as \defi{Text-order-sampling}{Text-Order-Sampling}.
+\end{Definition}
+
+No matter which of the above sampling strategies above is used, the code in Algorithm~\ref{alg:sampledSuffixArrayAccess} allows to access arbitrary elements of the suffix array.
+\begin{pseudocode}
+  {$\mathrm{access}$}
+  {sampledSuffixArrayAccess}
+  {Index $i$ to access.}
+  {Value of $SA[i]$.}
+  \STATE $k \gets 0$
+  \WHILE{$B[i] == 0$}
+    \STATE $k \gets k + 1$
+    \STATE $i \gets LF[i]$
+  \ENDWHILE
+  \RETURN $SA'[rank_1(i, B)] + k$
+\end{pseudocode}
+
+% TODO (pjungeblut): Describe the better SA sampling for suffix arrays.
+%                    (Project 1, Exercise 2).
+% TODO (pjungeblut): Describe ISA sampling. (Project 1, Exercise 3)
+% TODO (pjungeblut): Compare SA-order-sampling and text-order-sampling.
+%                    (Project 2, Exercise 1)
