@@ -17,7 +17,7 @@ Instead of storing the complete suffix array we can only store a subset of the v
     SA'[i/s] := SA[i]
     \text{.}
   \end{align}
-  This is known as \defi{Text-order-sampling}{Text-Order-Sampling}.
+  This is known as \defi{text-order-sampling}{Text-Order-Sampling}.
 \end{Definition}
 
 No matter which of the above sampling strategies above is used, the code in Algorithm~\ref{alg:sampledSuffixArrayAccess} allows to access arbitrary elements of the suffix array.
@@ -28,7 +28,7 @@ No matter which of the above sampling strategies above is used, the code in Algo
   {Index $i$ to access.}
   {Value of $SA[i]$.}
   \STATE $k \gets 0$
-  \WHILE{$B[i] == 0$}
+  \WHILE{$B[i] = 0$}
     \STATE $k \gets k + 1$
     \STATE $i \gets LF[i]$
   \ENDWHILE
@@ -36,6 +36,7 @@ No matter which of the above sampling strategies above is used, the code in Algo
 \end{pseudocode}
 
 \begin{Theorem}
+  \label{thm:sampledSuffixArrayAccess}
   If SA-order-sampling is used, the $\mathrm{access}$-method in Algorithm~\ref{alg:sampledSuffixArrayAccess} takes at most $\mathcal{O}(s\cdot t_{LF})$ time, where $t_{LF}$ is the time for an access in the $LF$ array.
 \end{Theorem}
 
@@ -93,5 +94,29 @@ No matter which of the above sampling strategies above is used, the code in Algo
   \end{pseudocode}
 \end{Proof}
 
-% TODO (pjungeblut): Compare SA-order-sampling and text-order-sampling.
-%                    (Project 2, Exercise 1)
+The bitvector storing the sampled positions of the the suffix array when using SA-order-sampling is a considerable space overhead for texts over a small alphabet. This overhead is saved when using text-order-sampling. However the upper bound of at most $s-1$ $LF$-calls does not hold any more. Consider a text like "abcdeabcde\$" that consists of two copies of the same string and a sampling parameter of $s=2$. Table~\ref{tbl:suffixArraySamplingComparison} shows the corresponding suffix array. The stars indicate which elements are sampled ($SA[i] \equiv 0$ for SA-order-sampling, $i \equiv 0$ for text-order-sampling).
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ccccl}
+    \toprule
+    $i$  & $SA[i]$ & $SA[i] \equiv 0$ & $i \equiv 0$ & $T[i..n-1]$ \\
+    \midrule
+    $0$  & $10$    & *                & *            & \$ \\
+    $1$  & $5$     &                  &              & abcde\$ \\
+    $2$  & $0$     & *                & *            & abcdeabcde\$ \\
+    $3$  & $6$     & *                &              & bcde\$ \\
+    $4$  & $1$     &                  & *            & bcdeabcde\$ \\
+    $5$  & $7$     &                  &              & cde\$ \\
+    $6$  & $2$     & *                & *            & cdeabcde\$ \\
+    $7$  & $8$     & *                &              & de\$ \\
+    $8$  & $3$     &                  & *            & deabcde\$ \\
+    $9$  & $9$     &                  &              & e\$ \\
+    $10$ & $4$     & *                & *            & eabcde\$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{The suffix array of $T=$"abcdeabcde\$" with different sampling positions. The sampling parameter is $s=2$.}
+  \label{tbl:suffixArraySamplingComparison}
+\end{table}
+
+Imagine we want to access $SA[9]$. Both sampling strategies did not sample this value. SA-order-sampling needs at most $s-1=1$ $LF$-call. Text-order-sampling however needs $5$ $LF$-calls. In general for a text like this of length $n$, $\frac{n}{s}$ $LF$-calls are necessary in the worst case, which is linear in the text length.
