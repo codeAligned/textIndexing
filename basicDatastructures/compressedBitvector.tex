@@ -1,7 +1,65 @@
 \section{Compressed Bitvector}
 
+\begin{Definition}
+  Given a sequence $X$ of length $n$ over an alphabet $\Sigma$. Let $n_c$ be the number of occurrences of character $c \in \Sigma$ in $X$.
+  \begin{align}
+    \mathcal{H}_0(X) := \sum\limits_{\substack{c \in \Sigma\\ n_c > 0}} \frac{n_c}{n}\log\frac{n}{n_c}
+  \end{align}
+  is called the \defi{zeroth order empirical entropy}{$\mathcal{H}_0$} and provides lower bound for the number of bits needed to compress $X$ using a compressor which just considers character frequencies.
+\end{Definition}
+
 \subsection{Elias-Fano Encoded Bitvector}
-% TODO (pjungeblut): Describe Elias-Fano-Encoding for bitvectors.
+
+\begin{Theorem}
+  \label{thm:eliasFanoEncoding}
+  Given a non-decreasing sequence $X$ of length $m$ over the alphabet $[0,n]$. Sequence $X$ can be compressed using $2m + m\log\frac{n}{m} + o(m)$ bits while each element can still be accessed in constant time.
+\end{Theorem}
+
+\begin{Proof}
+  Divide each element into a high-part and a low-part: The first $\lfloor \log m \rfloor$ bits correspond to the high-part, the other $\lceil \log n \rceil - \lfloor \log m \rfloor$ bits correspond to the low-part. The sequence of high-parts of $X$ is also non-decreasing. We use a unary gap encoding to represent the gaps and store the result in a bitvector $H$. For a gap of size $\delta_i$ we use $\delta_i + 1$ bits ($\delta_i$ zeros and $1$ one). The sum of the gaps (the total number of zeros in $H$) is at most $2^{\lfloor \log m \rfloor} \leq 2^{\log m} = m$. Therefore $H$ has size at most $2m$ (\#zeros + \#ones). The low parts can be stored explicitly.
+
+  \begin{pseudocode}
+    {$\mathrm{access}$}
+    {eliasFanoAccess}
+    {Index $i$ to access.}
+    {Element $X[i]$.}
+    \STATE $p \gets \mathrm{select}_1(i + 1, H)$
+    \STATE $x \gets p - i$
+    \RETURN $x \cdot 2^{\lceil\log n\rceil - \lfloor\log m\rfloor} + L[i]$
+  \end{pseudocode}
+
+  Algorithm~\ref{alg:eliasFanoAccess} provides a method to access the $i$-th element of the sequence in constant time.
+\end{Proof}
+
+Theorem~\ref{thm:eliasFanoEncoding} can be used to compress a bitvector~$B$. Let~$n$ be the length of~$B$ and~$m$ be the number of set bits. Further let $X$ be the positions of the set bits. $X$ forms an increasing sequence and therefore be used for compression.
+
+% TODO (pjungeblut): Provide an example for Elias-Fano-Encoding.
+\begin{Example}
+  \begin{table}[htbp]
+    \centering
+    \begin{tabular}{ccccccccc}
+      \toprule
+      $X$ & $=$ & $4$ & $13$ & $15$ & $24$ & $26$ & $27$ & $29$ \\
+      \midrule
+      & &
+      \texttt{00|100} &
+      \texttt{01|101} &
+      \texttt{01|111} &
+      \texttt{11|000} &
+      \texttt{11|010} &
+      \texttt{11|011} &
+      \texttt{11|101} \\
+
+      $\delta$ & $=$ & $0$ & $1$ & $0$ & $2$ & $0$ & $0$ & $0$ \\
+      $H$ & $=$ & \multicolumn{7}{l}{\texttt{1011001111}} \\
+      $L$ & $=$ & \multicolumn{7}{l}{\texttt{4, 5, 7, 0, 2, 3, 5}} \\
+      \bottomrule
+    \end{tabular}
+    \caption{Elias-Fano-Encoding for a given bitvector.}
+    \label{tbl:eliasFanoExample}
+  \end{table}
+  Table~\ref{tbl:eliasFanoExample} shows how the bitvector $B=(4,13,15,24,26,27,29)$ gets encoded. The length of $B$ is $7$, so $\lfloor \log 7 \rfloor = 2$ are in the high-part and $\lceil \log 29 \rceil - \lfloor \log 7 \rfloor = 3$ bits are in the low-part. The second row shows the binary representation of each elements, the vertical bar separates the low- and the high-part. Line $\delta$ shows the differences between two consecutive high-parts. Lines $H$ and $L$ now show the compressed high-parts and the explicitly stored low-parts.
+\end{Example}
 
 \subsection{$\mathcal{H}_0$-Compressed Bitvector}
 % TODO (pjungeblut): Describe H_0-Encoding for bitvectors.
