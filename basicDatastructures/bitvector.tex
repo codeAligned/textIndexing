@@ -4,8 +4,8 @@
   A \defi{bitvector}{Bitvector} $B$ is an array of bits that are compactly stored. A bitvector supports the following operations:
   \begin{itemize}
     \item $\proc{Access}(i)$ returns the $i$-th element in $B$.
-    \item $\proc{Rank}(i)$ returns the number of set bits in the prefix $[0..i-1]$ of $B$.
-    \item $\proc{Select}(i)$ returns the position of the $i$-th set bit.
+    \item $\proc{Rank}_q(i)$ returns the number of $q$-bits in the prefix $[0..i-1]$ of $B$. If $q$ is omitted, we assume $q = 1$.
+    \item $\proc{Select}_q(i)$ returns the position of the $i$-th $q$-bit. If $q$ is omitted, we assume $q = 1$.
   \end{itemize}
 \end{Definition}
 

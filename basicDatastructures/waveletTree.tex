@@ -3,9 +3,9 @@
 \begin{Definition}
   A \defi{wavelet tree}{Wavelet Tree} is a compact datastructure that stores a sequence $S$ and generalizes the operations of a bitvector to an arbitrary alphabet.
   \begin{itemize}
-    \item $\mathrm{access}(i)$ returns the $i$-th element of the sequence.
-    \item $\mathrm{rank}_q(i)$ returns the number of occurrences of $q$ in the prefix $S[0..i-1]$.
-    \item $\mathrm{select}_q(i)$ returns the position of the $i$-th occurrence of $q$ in $S$.
+    \item $\proc{Access}(i)$ returns the $i$-th element of the sequence.
+    \item $\proc{Rank}_q(i)$ returns the number of occurrences of $q$ in the prefix $S[0..i-1]$.
+    \item $\proc{Select}_q(i)$ returns the position of the $i$-th occurrence of $q$ in $S$.
   \end{itemize}
 
   The root of the wavelet tree stores the whole sequence. Each vertex recursively divides its sequence to its two children. The left child contains the first half of the remaining alphabet, the right child contains the second half of the remaining alphabet. A bitvector in every vertex stores the corresponding child for each element.
@@ -25,67 +25,71 @@
   \drawing{basicDatastructures/tikz/waveletTreeExample.tex}{The wavelet tree for the string "abracadabra".}{waveletTreeExample}
 \end{Example}
 
-When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:waveletTree}, each vertex can be described by two indices giving the position of the bitvector of the vertex in $B$. For example the root corresponds to the pair $[0,n-1]$. Algorithm~\ref{alg:waveletTreeLevel} shows how to get the level of a vertex $v$ of the wavelet tree. This just uses the fact, that every level contains $n$ bits. Algorithm~\ref{alg:waveletTreeSize} just calculates the length of the string stored in the given vertex. Algorithm~\ref{alg:waveletTreeLeftChild} and Algorithm~\ref{alg:waveletTreeRightChild} return the indices for the left and the right child of the given vertex. Assuming that we can execute the rank queries in constant time (Theorem~\ref{thm:bitvectorRank}), they both run in constant time. It is also possible to implement a $\mathrm{parent}$-function, but this needs additional information, such as whether the current vertex is a left or a right child of its parent.
+When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:waveletTree}, each vertex can be described by two indices giving the position of the bitvector of the vertex in $B$. For example the root corresponds to the pair $[0,n-1]$. Algorithm~\ref{alg:waveletTreeLevel} shows how to get the level of a vertex $v$ of the wavelet tree. This just uses the fact, that every level contains $n$ bits. Algorithm~\ref{alg:waveletTreeSize} just calculates the length of the string stored in the given vertex. Algorithm~\ref{alg:waveletTreeLeftChild} and Algorithm~\ref{alg:waveletTreeRightChild} return the indices for the left and the right child of the given vertex. Assuming that we can execute the rank queries in constant time (Theorem~\ref{thm:bitvectorRank}), they both run in constant time. It is also possible to implement a \proc{Parent}-function, but this needs additional information, such as whether the current vertex is a left or a right child of its parent.
 
-\begin{pseudocode}
-  {$\mathrm{level}$}
-  {waveletTreeLevel}
-  {Vertex $v=[l,r]$ of the wavelet tree.}
-  {Level $l$ that $v$ is on.}
-  \RETURN $\left\lceil \frac{l}{n} \right\rceil$
-\end{pseudocode}
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Level}(v=[l,r])$}
+    \li \Return $\left\lceil \frac{l}{n} \right\rceil$
+  \end{codebox}
+  \caption{Returns the level of a vertex of the wavelet tree.}
+  \label{alg:waveletTreeLevel}
+\end{algorithm}
 
-\begin{pseudocode}
-  {$\mathrm{size}$}
-  {waveletTreeSize}
-  {Vertex $v=[l,r]$ of the wavelet tree.}
-  {The number of elements in this vertex.}
-  \RETURN $r - l + 1$
-\end{pseudocode}
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Size}(v=[l,r])$}
+    \li \Return $r - l + 1$
+  \end{codebox}
+  \caption{Returns the number of elements stored in a vertex of the wavelet tree.}
+  \label{alg:waveletTreeSize}
+\end{algorithm}
 
-\begin{pseudocode}
-  {$\mathrm{left\_child}$}
-  {waveletTreeLeftChild}
-  {Vertex $v=[l,r]$ of the wavelet tree.}
-  {The left child $[l',r']$.}
-  \STATE $l' \gets l + n$
-  \STATE $r' \gets l' + \mathrm{size}(v) - (\mathrm{rank}(r + 1) - \mathrm{rank}(l))$
-  \RETURN $[l',r']$
-\end{pseudocode}
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Left-Child}(v=[l,r])$}
+    \li $l' \gets l + n$
+    \li $r' \gets l' + \proc{Size}(v) - (\proc{Rank}(r + 1) - \proc{Rank}(l)) - 1$
+    \li \Return $[l',r']$
+  \end{codebox}
+  \caption{Returns the left child of a vertex of the wavelet tree.}
+  \label{alg:waveletTreeLeftChild}
+\end{algorithm}
 
-\begin{pseudocode}
-  {$\mathrm{right\_child}$}
-  {waveletTreeRightChild}
-  {Vertex $v=[l,r]$ of the wavelet tree.}
-  {The right child $[l',r']$.}
-  \STATE $l' \gets l' + \mathrm{size}(v) - (\mathrm{rank}(r + 1) - \mathrm{rank}(l)) + 1$
-  \STATE $r' \gets r + n$
-  \RETURN $[l',r']$
-\end{pseudocode}
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Right-Child}(v=[l,r])$}
+    \li $r' \gets r + n$
+    \li $l' \gets r' - (\proc{Rank}(r + 1) - \proc{Rank}(l) - 1)$
+    \li \Return $[l',r']$
+  \end{codebox}
+  \caption{Returns the right child of a vertex of the wavelet tree.}
+  \label{alg:waveletTreeRightChild}
+\end{algorithm}
 
 \begin{Theorem}
   \label{thm:waveletTreeAceess}
-  The $\mathrm{access}(i)$-operation can be implemented in $\mathcal{O}(\log \sigma)$.
+  The $\proc{Access}(i)$-operation can be implemented in $\mathcal{O}(\log \sigma)$.
 \end{Theorem}
 
 \begin{Proof}
-  To access the $i$-th element we check the $i$-th position in the root-bitvector. If it is $0$, the element is stored in the left child and the new index there is $i - \mathrm{rank}(i)$. If it is $1$, the element is in the right child and the new index there is $i - \mathrm{rank}_0(i)$, where $\mathrm{rank}_0(i) := i - \mathrm{rank}(i)$ is the number of $0$-bits before position $i$.
+  To access the $i$-th element we check the $i$-th position in the root-bitvector. If it is $0$, the element is stored in the left child and the new index there is $i - \proc{Rank}(i)$. If it is $1$, the element is in the right child and the new index there is $i - \proc{Rank}_0(i)$, where $\proc{Rank}_0(i) := i - \proc{Rank}(i)$ is the number of $0$-bits before position $i$.
 
   This can be done in $\mathcal{O}(\log\sigma)$, because the wavelet tree has a height of $\log\sigma$ and the rank queries can be done in constant time on bitvectors.
 \end{Proof}
 
 \begin{Theorem}
   \label{thm:waveletTreeRank}
-  The $\mathrm{rank}_q(i)$-operation can be implemented in $\mathcal{O}(\log \sigma)$.
+  The $\proc{Rank}_q(i)$-operation can be implemented in $\mathcal{O}(\log \sigma)$.
 \end{Theorem}
 
 \begin{Proof}
-  $\mathrm{rank}_q(i)$-queries can be answered the same way as $\mathrm{access}(i)$-queries. The $\mathrm{access}(i)$-query descents into the leaf containing all $q$ symbols with some modified index $i'$. The rank is the number of elements before $i'$, so $i'-1$. Since no additional work needs to be done, the runtime is in $\mathcal{O}(\log\sigma)$.
+  $\proc{Rank}_q(i)$-queries can be answered the same way as $\proc{Access}(i)$-queries. The $\proc{Access}(i)$-query descents into the leaf containing all $q$ symbols with some modified index $i'$. The rank is the number of elements before $i'$, so $i'-1$. Since no additional work needs to be done, the runtime is in $\mathcal{O}(\log\sigma)$.
 \end{Proof}
 
 \begin{Theorem}
   \label{thm:waveletTreeSelect}
-  The $\mathrm{select}_q(i)$-operation can be implemented in $\mathcal{O}(\log \sigma)$.
+  The $\proc{Select}_q(i)$-operation can be implemented in $\mathcal{O}(\log \sigma)$.
 \end{Theorem}
 
 \begin{Proof}
@@ -93,5 +97,5 @@ When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:w
   %                    constant time on bitvectors. This is not yet proven in
   %                    this document. If added, also remove parentheses from
   %                    the last sentence in the following paragraph.
-  For a $\mathrm{select}_q(i)$-query we start in the leave corresponding to symbol $q$ at position $i$. This can be found the same way as in the $\mathrm{access}$-operation. Now we recursively process the parents until reaching the root. If the current vertex is a left child, the new position is the position of the $i$-th $0$ in the parent bitvector. If it is a right child, the new position is the position of the $i$-th $1$ in the parent bitvector. This needs $\mathrm{select}$-queries on bitvectors, which can be done in constant time (not part of this document yet).
+  For a $\proc{Select}_q(i)$-query we start in the leave corresponding to symbol $q$ at position $i$. This can be found the same way as in the $\proc{Access}$-operation. Now we recursively process the parents until reaching the root. If the current vertex is a left child, the new position is the position of the $i$-th $0$ in the parent bitvector. If it is a right child, the new position is the position of the $i$-th $1$ in the parent bitvector. This needs $\proc{Select}$-queries on bitvectors, which can be done in constant time (not part of this document yet).
 \end{Proof}

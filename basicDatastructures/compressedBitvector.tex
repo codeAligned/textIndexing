@@ -19,7 +19,7 @@
 \begin{Proof}
   Divide each element into a high-part and a low-part: The first $\lfloor \log m \rfloor$ bits correspond to the high-part, the other $\lceil \log n \rceil - \lfloor \log m \rfloor$ bits correspond to the low-part. The sequence of high-parts of $X$ is also non-decreasing. We use a unary gap encoding to represent the gaps and store the result in a bitvector $H$. For a gap of size $\delta_i$ we use $\delta_i + 1$ bits ($\delta_i$ zeros and $1$ one). The sum of the gaps (the total number of zeros in $H$) is at most $2^{\lfloor \log m \rfloor} \leq 2^{\log m} = m$. Therefore $H$ has size at most $2m$ (\#zeros + \#ones). The low parts can be stored explicitly.
 
-  \begin{algorithm}[htbp]
+  \begin{algorithm}[htb]
     \begin{codebox}
       \Procname{$\proc{Elias-Fano-Access}(i)$}
       \li $p \gets \proc{Select}_1(i + 1, H)$
