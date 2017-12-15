@@ -19,15 +19,16 @@
 \begin{Proof}
   Divide each element into a high-part and a low-part: The first $\lfloor \log m \rfloor$ bits correspond to the high-part, the other $\lceil \log n \rceil - \lfloor \log m \rfloor$ bits correspond to the low-part. The sequence of high-parts of $X$ is also non-decreasing. We use a unary gap encoding to represent the gaps and store the result in a bitvector $H$. For a gap of size $\delta_i$ we use $\delta_i + 1$ bits ($\delta_i$ zeros and $1$ one). The sum of the gaps (the total number of zeros in $H$) is at most $2^{\lfloor \log m \rfloor} \leq 2^{\log m} = m$. Therefore $H$ has size at most $2m$ (\#zeros + \#ones). The low parts can be stored explicitly.
 
-  \begin{pseudocode}
-    {$\mathrm{access}$}
-    {eliasFanoAccess}
-    {Index $i$ to access.}
-    {Element $X[i]$.}
-    \STATE $p \gets \mathrm{select}_1(i + 1, H)$
-    \STATE $x \gets p - i$
-    \RETURN $x \cdot 2^{\lceil\log n\rceil - \lfloor\log m\rfloor} + L[i]$
-  \end{pseudocode}
+  \begin{algorithm}[htbp]
+    \begin{codebox}
+      \Procname{$\proc{Elias-Fano-Access}(i)$}
+      \li $p \gets \proc{Select}_1(i + 1, H)$
+      \li $x \gets p - i$
+      \li \Return  $x \cdot 2^{\lceil\log n\rceil - \lfloor\log m\rfloor} + L[i]$
+    \end{codebox}
+    \caption{Access to the $i$-th element of \id{X}.}
+    \label{alg:eliasFanoAccess}
+  \end{algorithm}
 
   Algorithm~\ref{alg:eliasFanoAccess} provides a method to access the $i$-th element of the sequence in constant time.
 \end{Proof}
@@ -55,7 +56,7 @@ Theorem~\ref{thm:eliasFanoEncoding} can be used to compress a bitvector~$B$. Let
       $L$ & $=$ & \multicolumn{7}{l}{\texttt{4, 5, 7, 0, 2, 3, 5}} \\
       \bottomrule
     \end{tabular}
-    \caption{Elias-Fano-Encoding for a given bitvector.}
+    \caption{Elias-Fano-Encoding for a given sequence $X$.}
     \label{tbl:eliasFanoExample}
   \end{table}
   Table~\ref{tbl:eliasFanoExample} shows how the bitvector $B=(4,13,15,24,26,27,29)$ gets encoded. The length of $B$ is $7$, so $\lfloor \log 7 \rfloor = 2$ are in the high-part and $\lceil \log 29 \rceil - \lfloor \log 7 \rfloor = 3$ bits are in the low-part. The second row shows the binary representation of each elements, the vertical bar separates the low- and the high-part. Line $\delta$ shows the differences between two consecutive high-parts. Lines $H$ and $L$ now show the compressed high-parts and the explicitly stored low-parts.

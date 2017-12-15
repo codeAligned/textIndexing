@@ -3,15 +3,15 @@
 \begin{Definition}
   A \defi{bitvector}{Bitvector} $B$ is an array of bits that are compactly stored. A bitvector supports the following operations:
   \begin{itemize}
-    \item $\mathrm{access}(i)$ returns the $i$-th element in $B$.
-    \item $\mathrm{rank}(i)$ returns the number of set bits in the prefix $[0..i-1]$ of $B$.
-    \item $\mathrm{select}(i)$ returns the position of the $i$-th set bit.
+    \item $\proc{Access}(i)$ returns the $i$-th element in $B$.
+    \item $\proc{Rank}(i)$ returns the number of set bits in the prefix $[0..i-1]$ of $B$.
+    \item $\proc{Select}(i)$ returns the position of the $i$-th set bit.
   \end{itemize}
 \end{Definition}
 
 \begin{Theorem}
   \label{thm:bitvectorRank}
-  The $\mathrm{rank}$-Operation on bitvectors can be done constant time and $o(n)$ additional space.\cite{Jacobson1989}
+  The $\proc{Rank}$-Operation on bitvectors can be done constant time and $o(n)$ additional space.\cite{Jacobson1989}
 \end{Theorem}
 
 \begin{Proof}
@@ -22,7 +22,7 @@
     \item Now further divide each superblock $B_j$ into blocks $B_1^j, \ldots, B_{\lceil \frac{L}{S} \rceil}^j$ of size $S$.
     \item For each block $B_k^j$ of superblock $SB_j$ store $\sum_{i=(j-1)L}^{(j-1)L+kS-1} B[i]$. This is the number of set bits in the first $k$ blocks of superblock $SB_j$. For each block this needs $\mathcal{O}(\log L)$ bits.
   \end{enumerate}
-  For a given $\mathrm{rank}(i)$ query we now calculate the corresponding superblock $SB_j$ and block $B_k$. We use the precomputed sums to get the number of set bits in all superblocks before $SB_j$ and all blocks before $B_k$. All thats missing now is the number of set bits in block $B_k$ until position $i$. If the blocks are small enough, this information can be precomputed efficiently for all possible blocks and positions (Four-Russians-Trick).
+  For a given $\proc{Rank}(i)$ query we now calculate the corresponding superblock $SB_j$ and block $B_k$. We use the precomputed sums to get the number of set bits in all superblocks before $SB_j$ and all blocks before $B_k$. All thats missing now is the number of set bits in block $B_k$ until position $i$. If the blocks are small enough, this information can be precomputed efficiently for all possible blocks and positions (Four-Russians-Trick).
 
   We still need to choose $L$ and $S$:
   \begin{align}
