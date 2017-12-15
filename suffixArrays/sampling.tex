@@ -120,11 +120,3 @@ The bitvector storing the sampled positions of the the suffix array when using S
 \end{table}
 
 Imagine we want to access $SA[9]$. Both sampling strategies did not sample this value. SA-order-sampling needs at most $s-1=1$ $LF$-call. Text-order-sampling however needs $5$ $LF$-calls. In general for a text like this of length $n$, $\frac{n}{s}$ $LF$-calls are necessary in the worst case, which is linear in the text length.
-
-\begin{Theorem}
-  The values of $\Psi$ form at most $\sigma$ increasing integer sequences. Consider Table~\ref{tbl:suffixArraySummary} as an example.
-\end{Theorem}
-
-\begin{Proof}
-  We can divide the entries in the suffix array into $\sigma$ continuous parts, grouping the suffixes starting with the same symbol $c \in \Sigma$. In each group the suffixes are sorted lexicographically. Because the first character in each group is the same for each suffix, their second characters form an increasing sequence. $\Psi$ maps to the positions of the suffixes starting at these second characters, so the $\Psi$ values are also increasing.
-\end{Proof}

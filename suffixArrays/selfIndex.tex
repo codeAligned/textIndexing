@@ -118,3 +118,12 @@ Function $\Psi$ allows to reconstruct the text from the front in contrast to $LF
     \label{tbl:suffixArraySummary}
   \end{table}
 \end{Example}
+
+\begin{Theorem}
+  \label{thm:psiValuesIncreasing}
+  The values of $\Psi$ form at most $\sigma$ increasing integer sequences. Consider Table~\ref{tbl:suffixArraySummary} as an example.
+\end{Theorem}
+
+\begin{Proof}
+  We can divide the entries in the suffix array into $\sigma$ continuous parts, grouping the suffixes starting with the same symbol $c \in \Sigma$. In each group the suffixes are sorted lexicographically. Because the first character in each group is the same for each suffix, their second characters form an increasing sequence. $\Psi$ maps to the positions of the suffixes starting at these second characters, so the $\Psi$ values are also increasing.
+\end{Proof}

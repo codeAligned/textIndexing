@@ -1,0 +1,17 @@
+\section{Compressed Suffix Array}
+
+Theorem~\ref{thm:psiValuesIncreasing} tells us that the values of $\Psi$ form at most $\sigma$ increasing sequences in the range $[0,n-1]$. We can therefore use Elias-Fano-Encoding (Theorem~\ref{thm:eliasFanoEncoding}) to efficiently store the values of $\Psi$. What we get is the \defi{compressed suffix array}{Compressed Suffix Array} $CSA_\Psi$.
+
+Let's calculate the needed space for each of these sequences. In the following equation the alphabet $\Sigma$ is the set of possible gap lengths. For each $c \in \Sigma$, $n_c$ is the number of occurrences of $c$ as a gap in the increasing sequence.
+
+\begin{align}
+  \begin{aligned}
+    \vert CSA_\Psi \vert
+    &\stackrel{\mathclap{\text{\ref{thm:eliasFanoEncoding}}}}{=}
+    \sum_{c \in \Sigma} \left(2n_c + n_c\log\frac{n}{n_c} + o(n_c)\right) \\
+    &= \sum_{c \in \Sigma} 2n_c + n\sum_{c \in \Sigma}\frac{n_c}{n}\log\frac{n}{n_c} + o(n) \\
+    &\stackrel{\mathclap{\text{\ref{def:zerothOrderEntropy}}}}{=} 2n + n\mathcal{H}_0(T) + o(n)
+  \end{aligned}
+\end{align}
+
+In addition to these $2n + n\mathcal{H}_0(T) + o(n)$ bits we need another $\mathcal{O}(\sigma\log n)$ bits to store the character boundaries.
