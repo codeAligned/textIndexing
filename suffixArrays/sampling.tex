@@ -3,18 +3,18 @@
 Instead of storing the complete suffix array we can only store a subset of the values to save space.
 
 \begin{Definition}
-  Fix a sampling parameter $s$ and add a bitvector $B$ of length $n$ with $B[i] = 1$ if and only if $SA[i] \equiv 0 \mod s$. Store exactly those elements of $SA$ in another array $SA'$ of size $\lceil \frac{n}{s} \rceil$, the \defi{sampled suffix array}{Sampled Suffix Array}. For all $i$ with $B[i] = 1$, we get
+  Fix a sampling parameter $s$ and add a bitvector $B$ of length $n$ with $B[i] = 1$ if and only if $\id{SA}[i] \equiv 0 \mod s$. Store exactly those elements of \id{SA} in another array \id{SA'} of size $\lceil \frac{n}{s} \rceil$, the \defi{sampled suffix array}{Sampled Suffix Array}. For all $i$ with $B[i] = 1$, we get
   \begin{align}
-    SA'[\mathrm{rank}_1(i, B)] := SA[i]
+    \id{SA'}[\proc{Rank}_1(i, B)] := \id{SA}[i]
     \text{.}
   \end{align}
   This is known as \defi{SA-order-sampling}{SA-Order-Sampling}.
 \end{Definition}
 
 \begin{Definition}
-  Fix a sampling parameter $s$. Store exactly those elements $SA[i]$ with $i \equiv 0 \mod s$ in another array $SA'$ of size $\lceil \frac{n}{s} \rceil$. We get
+  Fix a sampling parameter $s$. Store exactly those elements $\id{SA}[i]$ with $i \equiv 0 \mod s$ in another array \id{SA'} of size $\lceil \frac{n}{s} \rceil$. We get
   \begin{align}
-    SA'[i/s] := SA[i]
+    \id{SA'}[i/s] := \id{SA}[i]
     \text{.}
   \end{align}
   This is known as \defi{text-order-sampling}{Text-Order-Sampling}.
@@ -22,101 +22,104 @@ Instead of storing the complete suffix array we can only store a subset of the v
 
 No matter which of the above sampling strategies above is used, the code in Algorithm~\ref{alg:sampledSuffixArrayAccess} allows to access arbitrary elements of the suffix array.
 
-\begin{pseudocode}
-  {$\mathrm{access}$}
-  {sampledSuffixArrayAccess}
-  {Index $i$ to access.}
-  {Value of $SA[i]$.}
-  \STATE $k \gets 0$
-  \WHILE{$B[i] = 0$}
-    \STATE $k \gets k + 1$
-    \STATE $i \gets LF[i]$
-  \ENDWHILE
-  \RETURN $SA'[rank_1(i, B)] + k$
-\end{pseudocode}
+\begin{algorithm}[htb]
+  \begin{codebox}
+  \Procname{$\proc{Access-Sampled-Suffix-Array}(i)$}
+  \li $k \gets 0$
+  \li \While $B[i] \isequal 0$
+      \Do
+  \li   $k \gets k + 1$
+  \li   $i \gets \id{LF}[i]$    
+      \End
+  \li \Return $\id{SA'}[\proc{Rank}_1(i, B)] + k$
+  \end{codebox}
+  \caption{Access the sampled suffix array.}
+  \label{alg:sampledSuffixArrayAccess}
+\end{algorithm}
 
 \begin{Theorem}
   \label{thm:sampledSuffixArrayAccess}
-  If SA-order-sampling is used, the $\mathrm{access}$-method in Algorithm~\ref{alg:sampledSuffixArrayAccess} takes at most $\mathcal{O}(s\cdot t_{LF})$ time, where $t_{LF}$ is the time for an access in the $LF$ array.
+  If SA-order-sampling is used, the $\proc{Access-Sampled-Suffix-Array}$-method in Algorithm~\ref{alg:sampledSuffixArrayAccess} takes at most $\mathcal{O}(s\cdot t_{\id{LF}})$ time, where $t_{\id{LF}}$ is the time for an access in the \id{LF} array.
 \end{Theorem}
 
 \begin{Proof}
-  Assume we want to access index $i$ of the suffix array $SA$ and let $j = SA[i]$. Each $i \leftarrow LF[i]$ call executed in Algorithm~\ref{alg:sampledSuffixArrayAccess} $j$ becomes $j-1$, so after at most $s - 1$ iterations $j - k = SA[i]$ is divisible by $s$ and therefore sampled. We can return $j - k + k = j$.
+  Assume we want to access index $i$ of the suffix array \id{SA} and let $j = \id{SA}[i]$. Each $i \gets \id{LF}[i]$ call executed in Algorithm~\ref{alg:sampledSuffixArrayAccess} $j$ becomes $j-1$, so after at most $s - 1$ iterations $j - k = \id{SA}[i]$ is divisible by $s$ and therefore sampled. We can return $j - k + k = j$.
 \end{Proof}
 
 \begin{Theorem}
-  SA-order-sampling as described needs at most $\frac{n}{s}\log n + 2n$ bits space. This can be improved to $\frac{n}{s}\log\frac{n}{s} + 2n$ bits, with the $\mathrm{access}$-operation still needing time in $\mathcal{O}(s\cdot t_{LF})$.
+  SA-order-sampling as described needs at most $\frac{n}{s}\log n + 2n$ bits space. This can be improved to $\frac{n}{s}\log\frac{n}{s} + 2n$ bits, with the $\proc{Access-Sampled-Suffix-Array}$-operation still needing time in $\mathcal{O}(s\cdot t_{\id{LF}})$.
 \end{Theorem}
 
 \begin{Proof}
-  The sampled suffix array has $\frac{n}{s}$ elements, each an integer from $[0,n-1]$. The additional $2n$ bits are $n$-bit bitvector $B$ and the overhead to allow $\mathrm{rank}$-operations in constant time.
+  The sampled suffix array has $\frac{n}{s}$ elements, each an integer from $[0,n-1]$. The additional $2n$ bits are $n$-bit bitvector $B$ and the overhead to allow $\proc{Rank}$-operations in constant time.
 
-  The necessary observation to reduce the space needed is that each sampled element $SA[i]$ is a multiple of the sampling parameter $s$. So instead of \begin{align}
-    SA'[\mathrm{rank}_1(i, B)] := SA[i]
+  The necessary observation to reduce the space needed is that each sampled element $\id{SA}[i]$ is a multiple of the sampling parameter $s$. So instead of \begin{align}
+    \id{SA'}[\proc{Rank}_1(i, B)] := \id{SA}[i]
   \end{align}
   we can write
   \begin{align}
-    SA'[\mathrm{rank}_1(i, B)] := \frac{SA[i]}{s}
+    \id{SA'}[\proc{Rank}_1(i, B)] := \frac{\id{SA}[i]}{s}
     \text{.}
   \end{align}
-  The access operation stays the same, instead of the return call in the last line: We need to multiply the value read from $SA'$ by $s$.
+  The access operation stays the same, instead of the return call in the last line: We need to multiply the value read from \id{SA'} by $s$.
 \end{Proof}
 
 \begin{Theorem}
-  The inverse suffix array $ISA$ can be sampled in $\frac{n}{s}\log n$ bits space using an array with $\frac{n}{s}$ elements and allowing to access arbitrary elements of $ISA$ in time $\mathcal{O}(s\cdot t_{LF})$.
+  The inverse suffix array \id{ISA} can be sampled in $\frac{n}{s}\log n$ bits space using an array with $\frac{n}{s}$ elements and allowing to access arbitrary elements of \id{ISA} in time $\mathcal{O}(s\cdot t_{\id{LF}})$.
 \end{Theorem}
 
 \begin{Proof}
-  $ISA[i]$ gives the lexicographical rank of the $i$-th suffix. Therefore
+  $\id{ISA}[i]$ gives the lexicographical rank of the $i$-th suffix. Therefore
   \begin{align}
-    LF[ISA[i]] = ISA[(i-1) \mod n]
+    \id{LF}[\id{ISA}[i]] = \id{ISA}[(i-1) \mod n]
     \text{.}
   \end{align}
   By induction we get
   \begin{align}
-    LF^k[ISA[i]] = ISA[(i - k) \mod n]
+    \id{LF}^k[\id{ISA}[i]] = \id{ISA}[(i - k) \mod n]
     \text{.}
   \end{align}
-  We now choose a sampling parameter $s$ and allocate an array $ISA'$ with $\frac{n}{s}$ elements. For every $i \equiv 0 \mod s$ we store
+  We now choose a sampling parameter $s$ and allocate an array \id{ISA'} with $\frac{n}{s}$ elements. For every $i \equiv 0 \mod s$ we store
   \begin{align}
-    ISA'[i/s] = ISA[i]
+    \id{ISA'}[i/s] = \id{ISA}[i]
     \text{.}
   \end{align}
-  To access $ISA[i]$ for some $i$ we can use the code from Algorithm~\ref{alg:sampledInverseSuffixArrayAccess}.
-  \begin{pseudocode}
-    {$\mathrm{access}$}
-    {sampledInverseSuffixArrayAccess}
-    {Index $i$ to access.}
-    {Value of $ISA[i]$.}
-    \STATE $idx \gets \lceil \frac{i}{s} \rceil$
-    \STATE $diff \gets idx - i$
-    \RETURN $LF^{diff}[ISA'[idx]]$
-  \end{pseudocode}
+  To access $\id{ISA}[i]$ for some $i$ we can use the code from Algorithm~\ref{alg:sampledInverseSuffixArrayAccess}.
+  \begin{algorithm}[htb]
+    \begin{codebox}
+      \Procname{$\proc{Access-Sampled-Inverse-Suffix-Array}(i)$}
+      \li $\id{idx} \gets \left \lceil \frac{i}{s} \right \rceil$
+      \li $\id{diff} \gets \id{idx} - i$
+      \li \Return $\id{LF}^{\id{diff}}[\id{ISA'}[\id{idx}]]$
+    \end{codebox}
+    \caption{Access the sampled inverse suffix array.}
+    \label{alg:sampledInverseSuffixArrayAccess}
+  \end{algorithm}
 \end{Proof}
 
-The bitvector storing the sampled positions of the the suffix array when using SA-order-sampling is a considerable space overhead for texts over a small alphabet. This overhead is saved when using text-order-sampling. However the upper bound of at most $s-1$ $LF$-calls does not hold any more. Consider a text like "abcdeabcde\$" that consists of two copies of the same string and a sampling parameter of $s=2$. Table~\ref{tbl:suffixArraySamplingComparison} shows the corresponding suffix array. The stars indicate which elements are sampled ($SA[i] \equiv 0$ for SA-order-sampling, $i \equiv 0$ for text-order-sampling).
+The bitvector storing the sampled positions of the the suffix array when using SA-order-sampling is a considerable space overhead for texts over a small alphabet. This overhead is saved when using text-order-sampling. However the upper bound of at most $s-1$ \id{LF}-calls does not hold any more. Consider a text like \texttt{abcdeabcde\$} that consists of two copies of the same string and a sampling parameter of $s=2$. Table~\ref{tbl:suffixArraySamplingComparison} shows the corresponding suffix array. The stars indicate which elements are sampled ($\id{SA}[i] \equiv 0$ for SA-order-sampling, $i \equiv 0$ for text-order-sampling).
 
-\begin{table}[htbp]
+\begin{table}[htb]
   \centering
   \begin{tabular}{ccccl}
     \toprule
-    $i$  & $SA[i]$ & $SA[i] \equiv 0$ & $i \equiv 0$ & $T[i..n-1]$ \\
+    $i$  & $\id{SA}[i]$ & $\id{SA}[i] \equiv 0$ & $i \equiv 0$ & $T[i \twodots n-1]$ \\
     \midrule
-    $0$  & $10$    & *                & *            & \$ \\
-    $1$  & $5$     &                  &              & abcde\$ \\
-    $2$  & $0$     & *                & *            & abcdeabcde\$ \\
-    $3$  & $6$     & *                &              & bcde\$ \\
-    $4$  & $1$     &                  & *            & bcdeabcde\$ \\
-    $5$  & $7$     &                  &              & cde\$ \\
-    $6$  & $2$     & *                & *            & cdeabcde\$ \\
-    $7$  & $8$     & *                &              & de\$ \\
-    $8$  & $3$     &                  & *            & deabcde\$ \\
-    $9$  & $9$     &                  &              & e\$ \\
-    $10$ & $4$     & *                & *            & eabcde\$ \\
+    $0$  & $10$    & \texttt{*} & \texttt{*} & \texttt{\$} \\
+    $1$  & $5$     &            &            & \texttt{abcde\$} \\
+    $2$  & $0$     & \texttt{*} & \texttt{*} & \texttt{abcdeabcde\$} \\
+    $3$  & $6$     & \texttt{*} &            & \texttt{bcde\$} \\
+    $4$  & $1$     &            & \texttt{*} & \texttt{bcdeabcde\$} \\
+    $5$  & $7$     &            &            & \texttt{cde\$} \\
+    $6$  & $2$     & \texttt{*} & \texttt{*} & \texttt{cdeabcde\$} \\
+    $7$  & $8$     & \texttt{*} &            & \texttt{de\$} \\
+    $8$  & $3$     &            & \texttt{*} & \texttt{deabcde\$} \\
+    $9$  & $9$     &            &            & \texttt{e\$} \\
+    $10$ & $4$     & \texttt{*} & \texttt{*} & \texttt{eabcde\$} \\
     \bottomrule
   \end{tabular}
-  \caption{The suffix array of $T=$"abcdeabcde\$" with different sampling positions. The sampling parameter is $s=2$.}
+  \caption{The suffix array of $T=\texttt{abcdeabcde\$}$ with different sampling positions. The sampling parameter is $s=2$.}
   \label{tbl:suffixArraySamplingComparison}
 \end{table}
 
-Imagine we want to access $SA[9]$. Both sampling strategies did not sample this value. SA-order-sampling needs at most $s-1=1$ $LF$-call. Text-order-sampling however needs $5$ $LF$-calls. In general for a text like this of length $n$, $\frac{n}{s}$ $LF$-calls are necessary in the worst case, which is linear in the text length.
+Imagine we want to access $\id{SA}[9]$. Both sampling strategies did not sample this value. SA-order-sampling needs at most $s-1=1$ \id{LF}-call. Text-order-sampling however needs $5$ \id{LF}-calls. In general for a text like this of length $n$, $\frac{n}{s}$ \id{LF}-calls are necessary in the worst case, which is linear in the text length.
