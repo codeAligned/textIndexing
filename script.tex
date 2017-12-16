@@ -36,13 +36,8 @@
 \renewtheorem{Theorem}[Definition]{Theorem}
 \renewtheorem{Lemma}[Definition]{Lemma}
 
-% TODO (pjungeblut): Remove this as soon as all of this is gone.
 % Pseudocode.
 \usepackage{algorithm}
-\usepackage[noend]{algorithmic}
-\algsetup{indent=2em}
-
-% Pseudocode.
 \usepackage{clrscode3e}
 
 % Nice table lines and page wide tables.
@@ -82,29 +77,6 @@
     \caption{#2}
     \label{fig:#3}
   \end{figure}
-}
-
-% Pseudocode.
-% Parameter 1: Name of the algorithm.
-% Parameter 2: The name of the label ("alg:" will be added as a prefix).
-% Parameter 3: Input description.
-% Parameter 4: Output description.
-\newenvironment{pseudocode}[4]
-{
-  \begin{algorithm}[H]
-    \caption{#1}
-    \label{alg:#2}
-    \setlength{\tabcolsep}{0mm}
-    \begin{tabularx}{\linewidth}{>{\bfseries}p{20mm}X}
-      Input  & #3 \\
-      Output & #4 \\
-      \midrule
-    \end{tabularx}
-    \begin{algorithmic}[1]
-}
-{
-    \end{algorithmic}
-  \end{algorithm}
 }
 
 \begin{document}
