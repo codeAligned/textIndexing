@@ -1,72 +1,72 @@
 \section{Burrows-Wheeler-Transformation}
 
 \begin{Definition}
-  The \defi{Burrows-Wheeler-Transformation}{Burrows-Wheeler-Transformation} $BWT$ rearranges the characters of a string $T$ into runs of similar characters which makes it easier to compress.
+  The \defi{Burrows-Wheeler-Transformation}{Burrows-Wheeler-Transformation} \id{BWT} rearranges the characters of a string $T$ into runs of similar characters which makes it easier to compress.
   \begin{equation}
-    BWT[i] := T[SA[i] - 1 \mod n]
+    \id{BWT}[i] := T[\id{SA}[i] - 1 \mod n]
   \end{equation}
-  Intuitively, $BWT[i]$ is the character preceding the $i$-th suffix (or the last character for the zeroth suffix).
+  Intuitively, $\id{BWT}[i]$ is the character preceding the $i$-th suffix (or the last character for the zeroth suffix).
 \end{Definition}
 
-The BWT needs $n\log\sigma$ bits of space if it is stored uncompressed. The idea behind the BWT was better compression: Compressed size is $nH_k(T)$ bits, where $H_k(T)$ is the $k-th$ order entropy of the text $T$.
+The \id{BWT} needs $n\log\sigma$ bits of space if it is stored uncompressed. The idea behind the \id{BWT} was better compression: Compressed size is $nH_k(T)$ bits, where $H_k(T)$ is the $k-th$ order entropy of the text $T$.
 
 \begin{Example}
-  Table~\ref{tbl:burrowsWheelerTransformationExample} shows the suffix array for the string "abracadabrabarbara\$" together with the Burrows-Wheeler-Transformation of it.
+  Table~\ref{tbl:burrowsWheelerTransformationExample} shows the suffix array for the string \texttt{abracadabrabarbara\$} together with the Burrows-Wheeler-Transformation of it.
   \begin{table}[htb]
     \centering
     \begin{tabular}{cccl}
       \toprule
-      $i$  & $SA[i]$ & $BWT[i]$ & $T[SA[i]..n-1]$ \\
+      $i$  & $\id{SA}[i]$ & $\id{BWT}[i]$ & $T[\id{SA}[i] \twodots n-1]$ \\
       \midrule
-      $0$  & $18$    & a        & \$ \\
-      $1$  & $17$    & r        & a\$ \\
-      $2$  & $10$    & r        & abarbara\$ \\
-      $3$  & $7$     & d        & abrabarbara\$ \\
-      $4$  & $0$     & \$       & abracadabrabarbara\$ \\
-      $5$  & $3$     & r        & acadabrabarbara\$ \\
-      $6$  & $5$     & c        & adabrabarbara\$ \\
-      $7$  & $15$    & b        & ara\$ \\
-      $8$  & $12$    & b        & arbara\$ \\
-      $9$  & $14$    & r        & bara\$ \\
-      $10$ & $11$    & a        & barbara\$ \\
-      $11$ & $8$     & a        & brabarbara\$ \\
-      $12$ & $1$     & a        & bracadabrabarbara\$ \\
-      $13$ & $4$     & a        & cadabrabarbara\$ \\
-      $14$ & $6$     & a        & dabrabarbara\$ \\
-      $15$ & $16$    & a        & ra\$ \\
-      $16$ & $9$     & b        & rabarbara\$ \\
-      $17$ & $2$     & b        & racadabrabarbara\$ \\
-      $18$ & $13$    & a        & rbara\$ \\
+      $0$  & $18$    & \texttt{a}        & \texttt{\$} \\
+      $1$  & $17$    & \texttt{r}        & \texttt{a\$} \\
+      $2$  & $10$    & \texttt{r}        & \texttt{abarbara\$} \\
+      $3$  & $7$     & \texttt{d}        & \texttt{abrabarbara\$} \\
+      $4$  & $0$     & \texttt{\$}       & \texttt{abracadabrabarbara\$} \\
+      $5$  & $3$     & \texttt{r}        & \texttt{acadabrabarbara\$} \\
+      $6$  & $5$     & \texttt{c}        & \texttt{adabrabarbara\$} \\
+      $7$  & $15$    & \texttt{b}        & \texttt{ara\$} \\
+      $8$  & $12$    & \texttt{b}        & \texttt{arbara\$} \\
+      $9$  & $14$    & \texttt{r}        & \texttt{bara\$} \\
+      $10$ & $11$    & \texttt{a}        & \texttt{barbara\$} \\
+      $11$ & $8$     & \texttt{a}        & \texttt{brabarbara\$} \\
+      $12$ & $1$     & \texttt{a}        & \texttt{bracadabrabarbara\$} \\
+      $13$ & $4$     & \texttt{a}        & \texttt{cadabrabarbara\$} \\
+      $14$ & $6$     & \texttt{a}        & \texttt{dabrabarbara\$} \\
+      $15$ & $16$    & \texttt{a}        & \texttt{ra\$} \\
+      $16$ & $9$     & \texttt{b}        & \texttt{rabarbara\$} \\
+      $17$ & $2$     & \texttt{b}        & \texttt{racadabrabarbara\$} \\
+      $18$ & $13$    & \texttt{a}        & \texttt{rbara\$} \\
       \bottomrule
     \end{tabular}
-    \caption{The suffix array for "abracadabrabarbara\$".}
+    \caption{The suffix array for \texttt{abracadabrabarbara\$}.}
     \label{tbl:burrowsWheelerTransformationExample}
   \end{table}
 \end{Example}
 
 \begin{Theorem}
-  We can search for all occurrences of a string $S$ in $T$ using the suffix array $SA$ and the Burrwos-Wheeler-Transform $BWT$ over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is knows as \defi{backward search}{Backward Search}.
+  We can search for all occurrences of a string $S$ in $T$ using the suffix array \id{SA} and the Burrwos-Wheeler-Transform \id{BWT} over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is knows as \defi{backward search}{Backward Search}.
 \end{Theorem}
 
 \begin{Proof}
-  We need another array $C$ storing for each $c \in \Sigma$ the position of the first suffix in~$SA$ starting with $c$. The numbers in $C$ are sorted the same way as the characters in~$\Sigma$. Array $C$ needs another $\sigma\log n$ bits of space.
+  We need another array $C$ storing for each $c \in \Sigma$ the position of the first suffix in~\id{SA} starting with $c$. The numbers in $C$ are sorted the same way as the characters in~$\Sigma$. Array $C$ needs another $\sigma\log n$ bits of space.
 
-  We search for all suffixes of $T$ starting with $S$. They form a consecutive interval in the suffix array $SA$ of $T$. We start with the full interval $[sp_0,ep_0]=[0,n-1]$ corresponding to all suffixes of $T$ starting with the empty suffix $\varepsilon$ of $S$. In step $i$ ($1 \leq i \leq m$), we will shrink the interval to $[sp_i,ep_i]$ corresponding to all suffixes of $T$ starting with the last $i$ characters of $S$ (this is why its called backward search). The new interval $[sp_{i+1},ep_{i+1}]$ is defined as
+  We search for all suffixes of $T$ starting with $S$. They form a consecutive interval in the suffix array \id{SA} of $T$. We start with the full interval $[\id{sp}_0,\id{ep}_0]=[0,n-1]$ corresponding to all suffixes of $T$ starting with the empty suffix $\varepsilon$ of $S$. In step $i$ ($1 \leq i \leq m$), we will shrink the interval to $[\id{sp}_i,\id{ep}_i]$ corresponding to all suffixes of $T$ starting with the last $i$ characters of $S$ (this is why its called backward search). The new interval $[\id{sp}_{i+1},\id{ep}_{i+1}]$ is defined as
   \begin{align}
-    sp_{i+1} &= C[c] + \mathrm{rank}_c(sp_i, BWT)
+    \id{sp}_{i+1} &= C[c] + \proc{Rank}_c(\id{sp}_i, \id{BWT})
     \label{eq:backwardSearchStartPos} \\
-    ep_{i+1} &= C[c] + \mathrm{rank}_c(ep_i + 1, BWT) - 1
+    \id{ep}_{i+1} &= C[c] + \proc{Rank}_c(\id{ep}_i + 1, \id{BWT}) - 1
     \label{eq:backwardSearchEndPos}
   \end{align}
-  where $c$ is the $(i+1)$-th last character of $S$. Both operations can be done in $\mathcal{O}(\log\sigma)$ using a wavelet tree over the $BWT$ array. The search needs $m$ steps, so the total runtime is in $\mathcal{O}(m\log\sigma)$.
+  where $c$ is the $(i+1)$-th last character of $S$. Both operations can be done in $\mathcal{O}(\log\sigma)$ using a wavelet tree over the \id{BWT} array. The search needs $m$ steps, so the total runtime is in $\mathcal{O}(m\log\sigma)$.
 
-  The interval given by $[sp_m,ep_m]$ in the suffix array corresponds to all occurrences of $S$ in $T$ and the positions are $SA[sp_m], \ldots, SA[ep_m]$.
+  The interval given by $[\id{sp}_m,\id{ep}_m]$ in the suffix array corresponds to all occurrences of $S$ in $T$ and the positions are $\id{SA}[\id{sp}_m], \ldots, \id{SA}[\id{ep}_m]$.
 \end{Proof}
 
-The intuition behind Equation~\ref{eq:backwardSearchStartPos} and~\ref{eq:backwardSearchEndPos} is the following: $C[c]$ gives the start position of all suffixes in $SA$ starting with the $(i+1)$-th character $c$ of $S$. But of course, only some continuous subsequence of them also starts with the whole last $i+1$ characters of $S$. This subsequence is calculated with the $\mathrm{rank}_c$ queries: The $BWT$ tells us, which of the suffixes in $[sp_i,ep_i]$ are preceded with $c$ (the $(i+1)$-th last character of $S$). To now calculate $sp_{i+1}$ from $i$, we need to know, how many suffixes starting with $c$ are lexicographically smaller than the $c$-preceded suffixes in $[sp_i,ep_i]$. The answer is just $\mathrm{rank}_c(sp_i, BWT)$ as in Equation~\ref{eq:backwardSearchStartPos}. For $ep_{i+1}$ Equation~\ref{eq:backwardSearchEndPos} additionally counts the number of suffixes of $T$ in $[sp_i,ep_i]$ preceded by $c$.
+The intuition behind Equation~\ref{eq:backwardSearchStartPos} and~\ref{eq:backwardSearchEndPos} is the following: $C[c]$ gives the start position of all suffixes in \id{SA} starting with the $(i+1)$-th character $c$ of $S$. But of course, only some continuous subsequence of them also starts with the whole last $i+1$ characters of $S$. This subsequence is calculated with the $\proc{Rank}_c$ queries: The \id{BWT} tells us, which of the suffixes in $[\id{sp}_i,\id{ep}_i]$ are preceded with $c$ (the $(i+1)$-th last character of $S$). To now calculate $\id{sp}_{i+1}$ from $i$, we need to know, how many suffixes starting with $c$ are lexicographically smaller than the $c$-preceded suffixes in $[\id{sp}_i,\id{ep}_i]$. The answer is just $\proc{Rank}_c(\id{sp}_i, \id{BWT})$ as in Equation~\ref{eq:backwardSearchStartPos}. For $\id{ep}_{i+1}$ Equation~\ref{eq:backwardSearchEndPos} additionally counts the number of suffixes of $T$ in $[\id{sp}_i,\id{ep}_i]$ preceded by $c$.
 
 \begin{Example}
-  We will again search for string $S=$"bar" in the text $T=$"abracadabrabarbara\$", this time using backward search. The suffix array and Burrows-Wheeler-Transformation of $T$ is given in Table~\ref{tbl:burrowsWheelerTransformationExample}.
+  We will again search for string $S=\texttt{bar}$ in the text $T=\texttt{abracadabrabarbara\$}$, this time using backward search. The suffix array and Burrows-Wheeler-Transformation of $T$ is given in Table~\ref{tbl:burrowsWheelerTransformationExample}.
 
   Array $C$ is given by the following Table~\ref{tbl:backwardSearchCExample} for text $T$.
   \begin{table}[htb]
@@ -78,43 +78,43 @@ The intuition behind Equation~\ref{eq:backwardSearchStartPos} and~\ref{eq:backwa
       0 & 1 & 9 & 13 & 14 & 15 \\
       \bottomrule
     \end{tabular}
-    \caption{$C$-array for the string "abracadabrabarbara\$".}
+    \caption{$C$-array for the string \texttt{abracadabrabarbara\$}.}
     \label{tbl:backwardSearchCExample}
   \end{table}
 
-  Initially $[sp_0,ep_0]=[0,n-1]$ is the whole set of all suffixes of $T$. They all match the empty suffix $\varepsilon$ of $S$. We will now go through the different steps of the backward search, the red part always highlights the current suffix of $S$ matched with the suffixes in $SA$.
+  Initially $[\id{sp}_0,\id{ep}_0]=[0,n-1]$ is the whole set of all suffixes of $T$. They all match the empty suffix $\varepsilon$ of $S$. We will now go through the different steps of the backward search, the red part always highlights the current suffix of $S$ matched with the suffixes in \id{SA}.
   \begin{enumerate}
-    \item Step 1 ("ba{\color{red}r}"):
+    \item Step 1 (\texttt{ba{\color{red}r}}):
     \begin{align*}
-      sp_1 &= C[r] + \mathrm{rank}_r(sp_0, BWT) \\
-           &= 15 + \mathrm{rank}_r(0, BWT) \\
-           &= 15 + 0 = 15 \\
-      ep_1 &= C[r] + \mathrm{rank}_r(ep_0 + 1, BWT) - 1 \\
-           &= 15 + \mathrm{rank}_r(19, BWT) \\
-           &= 15 + 4 - 1 = 18
+      \id{sp}_1 &= C[r] + \proc{Rank}_r(\id{sp}_0, \id{BWT}) \\
+                &= 15 + \proc{Rank}_r(0, \id{BWT}) \\
+                &= 15 + 0 = 15 \\
+      \id{ep}_1 &= C[r] + \proc{Rank}_r(\id{ep}_0 + 1, \id{BWT}) - 1 \\
+                &= 15 + \proc{Rank}_r(19, \id{BWT}) \\
+                &= 15 + 4 - 1 = 18
     \end{align*}
-    The suffixes starting with "r" start at position $C[r]=15$ in the suffix array and there is a total of four of them, so $[sp_1,ep_1]=[15,18]$.
+    The suffixes starting with \texttt{r} start at position $C[r]=15$ in the suffix array and there is a total of four of them, so $[\id{sp}_1,\id{ep}_1]=[15,18]$.
 
-    \item Step 2 ("b{\color{red}ar}"):
+    \item Step 2 (\texttt{b{\color{red}ar}}):
     \begin{align*}
-      sp_2 &= C[a] + \mathrm{rank}_a(sp_1, BWT) \\
-           &= 1 + \mathrm{rank}_a(15, BWT) \\
-           &= 1 + 6 = 7 \\
-      ep_2 &= C[a] + \mathrm{rank}_a(ep_1 + 1, BWT) - 1 \\
-           &= 1 + \mathrm{rank}_a(19, BWT) \\
-           &= 1 + 8 - 1 = 8
+      \id{sp}_2 &= C[a] + \proc{Rank}_a(\id{sp}_1, \id{BWT}) \\
+                &= 1 + \proc{Rank}_a(15, \id{BWT}) \\
+                &= 1 + 6 = 7 \\
+      \id{ep}_2 &= C[a] + \proc{Rank}_a(\id{ep}_1 + 1, \id{BWT}) - 1 \\
+                &= 1 + \proc{Rank}_a(19, \id{BWT}) \\
+                &= 1 + 8 - 1 = 8
     \end{align*}
-    Of the four suffixes starting with "r" found in step 1, two are preceded by "a" (at position $15$ and $18$ in the suffix array). Further there is $\mathrm{rank}_a(15, BWT)=6$ more suffixes preceded by "a" not starting with $r$ that are lexicographically smaller, so the new interval becomes $[sp_2,ep_2]=[7,8]$.
+    Of the four suffixes starting with \texttt{r} found in step 1, two are preceded by \texttt{a} (at position $15$ and $18$ in the suffix array). Further there is $\proc{Rank}_a(15, \id{BWT})=6$ more suffixes preceded by \texttt{a} not starting with \texttt{r} that are lexicographically smaller, so the new interval becomes $[\id{sp}_2,\id{ep}_2]=[7,8]$.
 
-    \item Step 3 ("{\color{red}bar}"):
+    \item Step 3 (\texttt{{\color{red}bar}}):
     \begin{align*}
-      sp_3 &= C[b] + \mathrm{rank}_b(sp_2, BWT) \\
-           &= 9 + \mathrm{rank}_b(7, BWT) \\
-           &= 9 + 0 = 9 \\
-      ep_3 &= C[b] + \mathrm{rank}_b(ep_2 + 1, BWT) - 1 \\
-           &= 9 + \mathrm{rank}_b(8, BWT) \\
-           &= 9 + 2 - 1 = 10
+      \id{sp}_3 &= C[b] + \proc{Rank}_b(\id{sp}_2, \id{BWT}) \\
+                &= 9 + \proc{Rank}_b(7, \id{BWT}) \\
+                &= 9 + 0 = 9 \\
+      \id{ep}_3 &= C[b] + \proc{Rank}_b(\id{ep}_2 + 1, \id{BWT}) - 1 \\
+                &= 9 + \proc{Rank}_b(8, \id{BWT}) \\
+                &= 9 + 2 - 1 = 10
     \end{align*}
-    Both suffixes starting with "ar" in $SA$ are preceded with "b" and there is no other, smaller suffixes in $SA$ preceded by "b", so the two suffixes starting with "bar" are given by $[sp_3,ep_3]=[9,10]$.
+    Both suffixes starting with \texttt{ar} in \id{SA} are preceded with \texttt{b} and there is no other, smaller suffixes in \id{SA} preceded by \texttt{b}, so the two suffixes starting with \texttt{bar} are given by $[\id{sp}_3,\id{ep}_3]=[9,10]$.
   \end{enumerate}
 \end{Example}
