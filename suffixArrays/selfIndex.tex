@@ -7,114 +7,114 @@ The suffix array together with the Burrows-Wheeler-Transformation allowed to cou
 \end{Definition}
 
 \begin{Definition}
-  Let $j = SA[i]$ be the starting position of the $i$-th smallest suffix. Then \defi{$LF[i]$}{LF-Mapping} is defined as the position of $(j-1) \mod n$ in the suffix array.
+  Let $j = \id{SA}[i]$ be the starting position of the $i$-th smallest suffix. Then \defi{$\id{LF}[i]$}{\id{LF}-Mapping} is defined as the position of $(j-1) \mod n$ in the suffix array.
 \end{Definition}
 
 \begin{Theorem}
-  $LF$ can be calculated from the Burrows-Wheeler-Transformation:
+  \id{LF} can be calculated from the Burrows-Wheeler-Transformation:
   \begin{align}
-    LF[i] := C[BWT[i]] + \mathrm{rank}_{BWT[i]}(i, BWT)
+    \id{LF}[i] := C[\id{BWT}[i]] + \proc{Rank}_{\id{BWT}[i]}(i, \id{BWT})
     \label{eq:lfMapping}
   \end{align}
 \end{Theorem}
 
 \begin{Proof}
-  We know that $BWT[i]$ is the character preceding the suffix at position $i$ in the suffix array. So the previous suffix must be in the continuous range of suffixes in the suffix array starting with $BWT[i]$. This range begins at index $C[BWT[i]]$. Then $\mathrm{rank}_{BWT[i]}(i, BWT)$ calculates the offset in this range by just counting how many suffixes also start with $BWT[i]$ and are lexicographically smaller.
+  We know that $\id{BWT}[i]$ is the character preceding the suffix at position $i$ in the suffix array. So the previous suffix must be in the continuous range of suffixes in the suffix array starting with $\id{BWT}[i]$. This range begins at index $C[\id{BWT}[i]]$. Then $\proc{Rank}_{\id{BWT}[i]}(i, \id{BWT})$ calculates the offset in this range by just counting how many suffixes also start with $\id{BWT}[i]$ and are lexicographically smaller.
 \end{Proof}
 
 \begin{Theorem}
   \label{thm:lfMapping}
-  The Burrows-Wheeler-Transformation and the $LF$-array are enough information to decode the whole text $T$.
+  The Burrows-Wheeler-Transformation and the \id{LF}-array are enough information to decode the whole text $T$.
 \end{Theorem}
 
 \begin{Proof}
   We will proof this by induction.
 
-  \textbf{Base:} We know that the last suffix is the dollar sign "\$" and that it is stored at index $0$ in the suffix array $SA$, because \$ is lexicographically smaller than all other characters of our alphabet.
+  \textbf{Base:} We know that the last suffix is the dollar sign \texttt{\$} and that it is stored at index $0$ in the suffix array \id{SA}, because \texttt{\$} is lexicographically smaller than all other characters of our alphabet.
 
-  \textbf{Step:} Assume we know some character $c$ and the index $i$, where the suffix of our text starting at $c$ is in the suffix array. Then the Burrows-Wheeler-Transformation $BWT[i]$ already gives us the character preceding $c$. To be able to pull of the same trick again, we still need the position of the suffix preceding the one starting at $c$. This is just how $LF[i]$ was defined.
+  \textbf{Step:} Assume we know some character $c$ and the index $i$, where the suffix of our text starting at $c$ is in the suffix array. Then the Burrows-Wheeler-Transformation $\id{BWT}[i]$ already gives us the character preceding $c$. To be able to pull of the same trick again, we still need the position of the suffix preceding the one starting at $c$. This is just how $\id{LF}[i]$ was defined.
 \end{Proof}
 
 \begin{Definition}
   The \defi{$F$-array}{$F$-Array} contains the first characters of each suffix of text $T$ in the order they appear in the suffix array.
   \begin{align}
-    F[i] := T[SA[i]]
+    F[i] := T[\id{SA}[i]]
   \end{align}
 \end{Definition}
 
 \begin{Definition}
-  The inverse of $LF$ is called \defi{$\Psi$}{$\Psi$-Mapping} and maps $j = SA[i]$, the position of the $i$-th smallest suffix, to the position of $(j+1) \mod n$ in the suffix array.
+  The inverse of \id{LF} is called \defi{$\Psi$}{$\Psi$-Mapping} and maps $j = \id{SA}[i]$, the position of the $i$-th smallest suffix, to the position of $(j+1) \mod n$ in the suffix array.
 \end{Definition}
 
 \begin{Theorem}
   For a text $T$ we get
   \begin{align}
-    \Psi[i] := \mathrm{select}_{F[i]}(\mathrm{rank}_{F[i]}(i, F), BWT)
+    \Psi[i] := \proc{Select}_{F[i]}(\proc{Rank}_{F[i]}(i, F), \id{BWT})
     \text{.}
   \end{align}
 \end{Theorem}
 
 \begin{Proof}
-  If $j = SA[i]$ is the position of the $i$-th lexicographically smallest suffix, then the suffix starting at position $j+1$ is preceded by $F[i]$. Therefore we know the Burrows-Wheeler-Transformation $BWT[\Psi[i]] = F[i]$. This is why we can calculate $\Psi$ by a $\mathrm{select}$-query on the $BWT$-array. The inner query $\mathrm{rank}_{F[i]}(i, F)$ determines which occurrence of $F[i]$ in the $BWT$-array we are interested in. If the suffix at position $i$ in the suffix array is the $k$-th smallest starting with $F[i]$, then we look for the $k$-th occurrence of $F[i]$ in the $BWT$-array.
+  If $j = \id{SA}[i]$ is the position of the $i$-th lexicographically smallest suffix, then the suffix starting at position $j+1$ is preceded by $F[i]$. Therefore we know the Burrows-Wheeler-Transformation $\id{BWT}[\Psi[i]] = F[i]$. This is why we can calculate $\Psi$ by a $\proc{Select}$-query on the \id{BWT}-array. The inner query $\proc{Rank}_{F[i]}(i, F)$ determines which occurrence of $F[i]$ in the \id{BWT}-array we are interested in. If the suffix at position $i$ in the suffix array is the $k$-th smallest starting with $F[i]$, then we look for the $k$-th occurrence of $F[i]$ in the \id{BWT}-array.
 \end{Proof}
 
-Function $\Psi$ allows to reconstruct the text from the front in contrast to $LF$, which can reconstruct it from the back as described in Theorem~\ref{thm:lfMapping}.
+Function $\Psi$ allows to reconstruct the text from the front in contrast to \id{LF}, which can reconstruct it from the back as described in Theorem~\ref{thm:lfMapping}.
 
 \begin{Definition}
-  The suffix array is a permutation of the integers in $[0,n]$. The inverse permutation $ISA$ is called the \defi{inverse suffix array}{Inverse Suffix Array}. We get $i = ISA[SA[i]]$.
+  The suffix array is a permutation of the integers in $[0,n]$. The inverse permutation \id{ISA} is called the \defi{inverse suffix array}{Inverse Suffix Array}. We get $i = \id{ISA}[\id{SA}[i]]$.
 \end{Definition}
 
 \begin{Theorem}
   \label{thm:lfPsiViaSAISA}
-  $LF$ and $\Psi$ can be expressed using only the suffix array $SA$ and the inverse suffix array~$ISA$.
+  \id{LF} and $\Psi$ can be expressed using only the suffix array \id{SA} and the inverse suffix array~\id{ISA}.
   \begin{align}
-    LF[i] &= ISA[(SA[i] - 1) \mod n] \\
-    \Psi[i] &= ISA[(SA[i] + 1) \mod n]
+    \id{LF}[i] &= \id{ISA}[(\id{SA}[i] - 1) \mod n] \\
+    \Psi[i] &= \id{ISA}[(\id{SA}[i] + 1) \mod n]
   \end{align}
 \end{Theorem}
 
 \begin{Proof}
-  $LF[i]$ was defined as the position of $(SA[i] - 1) \mod n$ in the suffix array. If we know the inverse permutation of the suffix array $ISA$, we can just look into it for the position we want. For $\Psi$ this works analogously.
+  $\id{LF}[i]$ was defined as the position of $(\id{SA}[i] - 1) \mod n$ in the suffix array. If we know the inverse permutation of the suffix array \id{ISA}, we can just look into it for the position we want. For $\Psi$ this works analogously.
 \end{Proof}
 
 \begin{Theorem}
-  $SA$, $ISA$, $LF$ and $\Psi$ can be accessed using $n \log n + o(n \log n)$ bits space each in time $\mathcal{O}(\log n)$ .
+  \id{SA}, \id{ISA}, \id{LF} and $\Psi$ can be accessed using $n \log n + o(n \log n)$ bits space each in time $\mathcal{O}(\log n)$ .
 \end{Theorem}
 
 \begin{Proof}
-  We can build a wavelet tree over the suffix array $SA$. By Theorem~\ref{thm:waveletTreeAceess} we can than access each element in the suffix array in time $\mathcal{O}(\log n)$. To access the inverse suffix array $ISA$ we would need the position of some value $i$ in the suffix array. This can be done with a single $\mathrm{select}$-query on the wavelet tree. By Theorem~\ref{thm:waveletTreeSelect} this takes time $\mathcal{O}(\log n)$ time as well. Last, we know from Theorem~\ref{thm:lfPsiViaSAISA} that efficient access to $SA$ and $ISA$ is enough to calculate $LF$ and $\Psi$.
+  We can build a wavelet tree over the suffix array \id{SA}. By Theorem~\ref{thm:waveletTreeAceess} we can than access each element in the suffix array in time $\mathcal{O}(\log n)$. To access the inverse suffix array \id{ISA} we would need the position of some value $i$ in the suffix array. This can be done with a single \proc{Select}-query on the wavelet tree. By Theorem~\ref{thm:waveletTreeSelect} this takes time $\mathcal{O}(\log n)$ time as well. Last, we know from Theorem~\ref{thm:lfPsiViaSAISA} that efficient access to \id{SA} and \id{ISA} is enough to calculate \id{LF} and $\Psi$.
 \end{Proof}
 
 \begin{Example}
-  Table~\ref{tbl:suffixArraySummary} shows the suffix array for the string "abracadabrabarbara\$" together with all the different arrays introduced in this sectin.
+  Table~\ref{tbl:suffixArraySummary} shows the suffix array for the string $T=\texttt{abracadabrabarbara\$}$ together with all the different arrays introduced in this section.
   \begin{table}[htb]
     \centering
     \begin{tabular}{ccccccl}
       \toprule
-      $i$&$SA[i]$&$LF[i]$&$\Psi[i]$&$BWT[i]$&$F[i]$& $T[SA[i]..n-1]$ \\
+      $i$ & $\id{SA}[i]$ & $\id{LF}[i]$ & $\Psi[i]$ & $\id{BWT}[i]$ & $F[i]$ & $T[\id{SA}[i] \twodots n-1]$ \\
       \midrule
-      $0$  & $18$ & $1$  & $4$  & a  & \$ & \$ \\
-      $1$  & $17$ & $15$ & $0$  & r  & a  & a\$ \\
-      $2$  & $10$ & $16$ & $10$ & r  & a  & abarbara\$ \\
-      $3$  & $7$  & $14$ & $11$ & d  & a  & abrabarbara\$ \\
-      $4$  & $0$  & $0$  & $12$ & \$ & a  & abracadabrabarbara\$ \\
-      $5$  & $3$  & $17$ & $13$ & r  & a  & acadabrabarbara\$ \\
-      $6$  & $5$  & $13$ & $14$ & c  & a  & adabrabarbara\$ \\
-      $7$  & $15$ & $9$  & $15$ & b  & a  & ara\$ \\
-      $8$  & $12$ & $10$ & $18$ & b  & a  & arbara\$ \\
-      $9$  & $14$ & $18$ & $7$  & r  & b  & bara\$ \\
-      $10$ & $11$ & $2$  & $8$  & a  & b  & barbara\$ \\
-      $11$ & $8$  & $3$  & $16$ & a  & b  & brabarbara\$ \\
-      $12$ & $1$  & $4$  & $17$ & a  & b  & bracadabrabarbara\$ \\
-      $13$ & $4$  & $5$  & $6$  & a  & c  & cadabrabarbara\$ \\
-      $14$ & $6$  & $6$  & $3$  & a  & d  & dabrabarbara\$ \\
-      $15$ & $16$ & $7$  & $1$  & a  & r  & ra\$ \\
-      $16$ & $9$  & $11$ & $2$  & b  & r  & rabarbara\$ \\
-      $17$ & $2$  & $12$ & $5$  & b  & r  & racadabrabarbara\$ \\
-      $18$ & $13$ & $8$  & $9$  & a  & r  & rbara\$ \\
+      $0$  & $18$ & $1$  & $4$  & \texttt{a}  & \texttt{\$} & \texttt{\$} \\
+      $1$  & $17$ & $15$ & $0$  & \texttt{r}  & \texttt{a}  & \texttt{a\$} \\
+      $2$  & $10$ & $16$ & $10$ & \texttt{r}  & \texttt{a}  & \texttt{abarbara\$} \\
+      $3$  & $7$  & $14$ & $11$ & \texttt{d}  & \texttt{a}  & \texttt{abrabarbara\$} \\
+      $4$  & $0$  & $0$  & $12$ & \texttt{\$} & \texttt{a}  & \texttt{abracadabrabarbara\$} \\
+      $5$  & $3$  & $17$ & $13$ & \texttt{r}  & \texttt{a}  & \texttt{acadabrabarbara\$} \\
+      $6$  & $5$  & $13$ & $14$ & \texttt{c}  & \texttt{a}  & \texttt{adabrabarbara\$} \\
+      $7$  & $15$ & $9$  & $15$ & \texttt{b}  & \texttt{a}  & \texttt{ara\$} \\
+      $8$  & $12$ & $10$ & $18$ & \texttt{b}  & \texttt{a}  & \texttt{arbara\$} \\
+      $9$  & $14$ & $18$ & $7$  & \texttt{r}  & \texttt{b}  & \texttt{bara\$} \\
+      $10$ & $11$ & $2$  & $8$  & \texttt{a}  & \texttt{b}  & \texttt{barbara\$} \\
+      $11$ & $8$  & $3$  & $16$ & \texttt{a}  & \texttt{b}  & \texttt{brabarbara\$} \\
+      $12$ & $1$  & $4$  & $17$ & \texttt{a}  & \texttt{b}  & \texttt{bracadabrabarbara\$} \\
+      $13$ & $4$  & $5$  & $6$  & \texttt{a}  & \texttt{c}  & \texttt{cadabrabarbara\$} \\
+      $14$ & $6$  & $6$  & $3$  & \texttt{a}  & \texttt{d}  & \texttt{dabrabarbara\$} \\
+      $15$ & $16$ & $7$  & $1$  & \texttt{a}  & \texttt{r}  & \texttt{ra\$} \\
+      $16$ & $9$  & $11$ & $2$  & \texttt{b}  & \texttt{r}  & \texttt{rabarbara\$} \\
+      $17$ & $2$  & $12$ & $5$  & \texttt{b}  & \texttt{r}  & \texttt{racadabrabarbara\$} \\
+      $18$ & $13$ & $8$  & $9$  & \texttt{a}  & \texttt{r}  & \texttt{rbara\$} \\
       \bottomrule
     \end{tabular}
-    \caption{The suffix array for "abracadabrabarbara\$".}
+    \caption{The suffix array for $T=\texttt{abracadabrabarbara\$}$.}
     \label{tbl:suffixArraySummary}
   \end{table}
 \end{Example}
