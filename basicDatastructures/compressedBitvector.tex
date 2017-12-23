@@ -63,4 +63,39 @@ Theorem~\ref{thm:eliasFanoEncoding} can be used to compress a bitvector~$B$. Let
 \end{Example}
 
 \subsection{$\mathcal{H}_0$-Compressed Bitvector}
-% TODO (pjungeblut): Describe H_0-Encoding for bitvectors.
+
+Let $B$ be a bitvector of length $n$ with $\kappa$ bits set. The entropy of this bitvector is
+\begin{align}
+  \mathcal{H}_0(B) = \frac{\kappa}{n}\log\frac{n}{\kappa} + \frac{n-\kappa}{n}\log\frac{n}{n - \kappa}
+  \text{.}
+\end{align}
+
+\begin{Theorem}
+  A bitvector can be represented in $n\mathcal{H}_0(B) + o(n)$ bits space while \proc{Rank} and \proc{Select} queries can be executed in constant time.
+\end{Theorem}
+
+\begin{Proof}
+  Split the bitvector into blocks of length $K = \frac{1}{2}\log n$ bits. For each block $i$ we store the number of set bits $\kappa_i$ using $\lceil \log K + 1\rceil$ bits. These identifiers sum up to $\mathcal{O}(n\frac{\log\log n}{\log n})$ bits.
+
+  Now we represent each block as a tuple $(\kappa_i,r_i)$. The first element $0 \leq \kappa_i \leq K$ is the number of set bits in this block. The second element $0 \leq r_i < \binom{K}{\kappa_i}$ is the index within the class.
+  \begin{align}
+    \begin{aligned}
+      \vert B \vert
+      &= \sum\limits_{i=0}^\frac{n-1}{K} \left\lceil\log\binom{K}{\kappa_i}\right\rceil \\
+      &\leq \log\left(\prod\limits_{i=0}^{\frac{n-1}{K}}\binom{K}{\kappa_i}\right) + \left\lceil\frac{n}{K}\right\rceil \\
+      &\leq \log\binom{n}{\kappa_0 + \ldots + \kappa_{(n-1)/K}} + \left\lceil\frac{n}{K}\right\rceil \\
+      &= \log\binom{n}{K}  + \left\lceil\frac{n}{K}\right\rceil\\
+      &\leq n\mathcal{H}_0(B) + \left\lceil\frac{n}{K}\right\rceil \\
+      &= n\mathcal{H}_0(B) + \mathcal{O}\left(\frac{n}{\log n}\right)
+    \end{aligned}
+  \end{align}
+  In total this gives a space requirement of $n\mathcal{H}_0(B) + \mathcal{O}\left(\frac{n}{\log n}\right) + \mathcal{O}(n\frac{\log\log n}{\log n}) = n\mathcal{H}_0(B) + o(n)$ bits. We will not go into the implementation of \proc{Rank} and \proc{Select} here.
+\end{Proof}
+
+To encode and decode a block with $\kappa$ bits set we must be able to transform the bitstring into the $(\kappa, r)$ pair and vice versa. We can do this on-the-fly by using a \defi{combinatorial number system}{Combinatorial Number System}. The idea is to give them consecutive numbers from $0$ to $\binom{K}{\kappa}-1$ in the order given by their values interpreted as binary numbers.
+
+% TODO (pjungeblut): This can nicely be visualised.
+\begin{itemize}
+  \item To encode a given bitstring initialize $r = 0$ and go through the bits from left to right. If the first bit is a $0$, we just drop it, decrement $K$ and continue with the remaining bits. If the first bit is a $1$, we know that there is $\binom{K-1}{\kappa-1}$ other possible bitstrings that start with $0$ and contain $\kappa$ bits. Therefore we increase $r$ by $\binom{K-1}{\kappa-1}$, decrement $K$ and $\kappa$ and continue with the next bit.
+  \item To decode a given pair $(\kappa, r)$, we check if $r \geq \binom{K}{\kappa}$. If so, the first bit is a $1$ and we subtract $\binom{K}{\kappa}$ from $r$, decrease $K$ and $\kappa$ and continue to get the next bit. If $r < \binom{K}{\kappa}$, then the first bit is $0$ and we decrease $K$ and continue to get the next bit.
+\end{itemize}
