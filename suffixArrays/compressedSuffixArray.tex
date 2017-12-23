@@ -1,8 +1,10 @@
 \section{Compressed Suffix Array}
 
-Theorem~\ref{thm:psiValuesIncreasing} tells us that the values of $\Psi$ form at most $\sigma$ increasing sequences in the range $[0,n-1]$. We can therefore use Elias-Fano-Encoding (Theorem~\ref{thm:eliasFanoEncoding}) to efficiently store the values of $\Psi$. What we get is the \defi{compressed suffix array}{Compressed Suffix Array} $\id{CSA}_\Psi$.
+Theorem~\ref{thm:psiValuesIncreasing} tells us that the values of $\Psi$ form at most $\sigma$ increasing sequences in the range $[0,n-1]$. We can use this fact to compress this data and obtain what is called a $\Psi$-based \defi{compressed suffix array}{Compressed Suffix Array} $\id{CSA}_\Psi$.
 
-Let's calculate the needed space for each of these sequences. In the following equation the alphabet $\Sigma$ is the set of possible gap lengths. For each $c \in \Sigma$, $n_c$ is the number of occurrences of $c$ as a gap in the increasing sequence.
+\subsection{Elias-Fano-Encoded $\id{CSA}_\Psi$}
+
+We can use Elias-Fano-Encoding (Theorem~\ref{thm:eliasFanoEncoding}) to encode each of the increasing subsequences of $\Psi$. Let's calculate the needed space for each of these sequences. In the following equation the alphabet $\Sigma$ is the set of possible gap lengths. For each $c \in \Sigma$, $n_c$ is the number of occurrences of $c$ as a gap in the increasing sequence.
 
 \begin{align}
   \begin{aligned}
@@ -40,4 +42,48 @@ In addition to these $2n + n\mathcal{H}_0(T) + o(n)$ bits we need another $\math
   \label{alg:compareCompressedSuffixArrayPsi}
 \end{algorithm}
 
-We can use Algorithm~\ref{alg:compareCompressedSuffixArrayPsi} to search for some pattern $P$ in the compressed suffix array. All we need to store is array $C$ giving the first position for each character and array $\Psi$. We can then binary search for the correct position each time using \proc{Compare-CSA} to check whether the corresponding entry matches $P$. \proc{Compare-CSA} compares the pattern from left to right. Index $C[P[k] + 1] - 1$ in Line~\ref{line:compareCSACheckSmaller} is the last position in the suffix array starting with $P[k]$ while index $C[P[k]]$ is the first position in the suffix array starting with $P[k]$.
+We can use Algorithm~\ref{alg:compareCompressedSuffixArrayPsi} to search for some pattern $P$ in the compressed suffix array. All we need to store is array $C$ giving the first position for each character and array $\Psi$. We can then binary search for the correct position each time using \proc{Compare-CSA} to check whether the corresponding entry matches $P$. \proc{Compare-CSA} compares the pattern from left to right. Index $C[P[k] + 1] - 1$ in Line~\ref{line:compareCSACheckSmaller} is the last position in the suffix array starting with $P[k]$ while index $C[P[k]]$ is the first position in the suffix array starting with $P[k]$. The whole process needs time $\mathcal{O}(m\log n \log \sigma)$.
+
+\subsection{Elias-$\delta$-Encoded $\id{CSA}_\Psi$}
+
+Another way to encode and compress the values of $\Psi$ is by using an Elias-$\delta$-code.
+
+\begin{Definition}
+  \label{def:eliasDeltaEncoding}
+  \defi{Elias-$\delta$-Encoding}{Elias-$\delta$-Encoding} is a way to represent a positive integer $x$ using $\lfloor\log (x)\rfloor+2\lfloor(\lfloor\log (x)\rfloor + 1)\rfloor+1$ bits.
+
+  To encode $x$ execute the following steps:
+  \begin{enumerate}
+    \item Let $N = \lfloor \log x \rfloor$ be the highest power of two in $x$, so $2^N \leq x < 2^{N+1}$.
+    \item Let $L = \lfloor \log N + 1 \rfloor$ be the highest power of two in $N+1$, so $2^L \leq N+1 < 2^{L + 1}$.
+    \item Write $L$ zeros.
+    \item Write the $L+1$ bit representation of $N+1$.
+    \item Write the last $N$ bits of $X$ (all but the leading one).
+  \end{enumerate}
+\end{Definition}
+
+Let's now calculate the space needed to store the values of $\Psi$ if an Elias-$\delta$-Encoding is used. Again, the set of possible gaps is the alphabet and $n_c$ is the number of occurrences of a symbol (i.e. gap) in the values of $\Psi$. Furhter we define
+\begin{align}
+  g_{c,i} &=
+  \begin{cases}
+    \Psi[C[c]] & \text{for $i = 0$} \\  
+    \Psi[C[c] + i] - \Psi[C[c] + i - 1] & \text{for $i > 0$}
+  \end{cases}
+\end{align}
+to be the $i$-th gap length of the increasing sequence corresponding to symbol $c$.
+
+\begin{align}
+  \begin{aligned}
+    \vert \id{CSA}_\Psi \vert
+    &\stackrel{\mathclap{\text{\ref{def:eliasDeltaEncoding}}}}{=}
+    \sum\limits_{c \in \Sigma} \sum\limits_{i = 0}^{n_c - 1}
+    \left(\log g_{c,i} + 2 \log\log g_{c,i} + \mathcal{O}(1)\right) \\
+    &\leq\mathcal{O}(n) + \sum\limits_{c \in \Sigma}\sum\limits_{i = 0}^{n_c - 1}
+    \left(\log\frac{n}{n_c}+2\log\log\frac{n}{n_c}\right) \\
+    &=\mathcal{O}(n) + n\sum\limits_{c \in \Sigma}\frac{n_c}{n}
+    \left(\log\frac{n}{n_c}+2\log\log\frac{n}{n_c}\right) \\
+    &=n\mathcal{H}_0(T) + \mathcal{O}(n \log\log n)
+  \end{aligned}
+\end{align}
+
+In the first step we just applied the definition of Elias-$\delta$-Encoding, before estimating an upper bound for the logarithms in the second step. In the third step we now used that the summation index $i$ does not appear in the expression anymore. The we split the summation into two sums and plug the definition for the zeroth-order entropy.
