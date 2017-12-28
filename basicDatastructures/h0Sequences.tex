@@ -1,0 +1,10 @@
+\section{$\mathcal{H}_0$-Compression for Sequences}
+
+\begin{Definition}
+  Let $S$ be a sequence of length $n$ over an alphabet $\Sigma = [0, \sigma - 1]$ of size $\sigma$. Again $n_c$ is the number of occurrences of $c \in \Sigma$ in $S$.
+  \begin{align}
+    \mathcal{H}_0(S) = \sum\limits_{c \in \Sigma} \frac{n_c}{n}\log\frac{n}{n_c}
+  \end{align}
+\end{Definition}
+
+The idea to compress $S$ is to represent $S$ via a bitvector using compressed bitvectors.
