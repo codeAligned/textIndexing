@@ -3,8 +3,47 @@
 \begin{Definition}
   Let $S$ be a sequence of length $n$ over an alphabet $\Sigma = [0, \sigma - 1]$ of size $\sigma$. Again $n_c$ is the number of occurrences of $c \in \Sigma$ in $S$.
   \begin{align}
-    \mathcal{H}_0(S) = \sum\limits_{c \in \Sigma} \frac{n_c}{n}\log\frac{n}{n_c}
+    \mathcal{H}_0(S) = \sum\limits_{\substack{c \in \Sigma\\ n_c > 0}} \frac{n_c}{n}\log\frac{n}{n_c}
   \end{align}
 \end{Definition}
 
-The idea to compress $S$ is to represent $S$ via a bitvector using compressed bitvectors.
+The idea to compress $S$ is to represent $S$ as a wavelet tree using $\mathcal{H}_0$-compressed bitvectors. For a bitstring $\omega$, $S_\omega$ we will denote the node in the wavelet tree containing all symbols from $S$ whose binary representations starts with $\omega$. So $S_\varepsilon$ is the root, $S_0$ the left child of it and $S_{10}$ the left child of the right child of the root.
+
+\begin{Theorem}
+  A sequence $S$ of length $n$ with alphabet $\sigma$ can be represented with a wavelet tree in space $n\mathcal{H}_0(S)$ bits.
+\end{Theorem}
+
+\begin{Proof}
+  We will proof the claim by induction. Let $H$ be the height of the wavelet tree. For a leaf $S_c$ of the wavelet tree we get $\mathcal{H}_0(S_c) = 0$. Now as the induction hypothesis assume that the claim holds for all nodes $S_\omega$ where $\omega$ is a binary string of length $L$.
+
+  Now consider a subsequence $S_\omega$ corresponding to an inner vertex, where $\omega$ is a binary string of length $L - 1$. By our induction hypothesis the space needed to represent $S_{\omega 0}$ and $S_{\omega 1}$ is $n_{\omega 0}\mathcal{H}_0(S_{\omega 0})$ and $n_{\omega 1}\mathcal{H}_0(S_{\omega 1})$. Now the space needed to encode $S_\omega$ is ($B_\omega$ is the bitvector in the node corresponding to $S_\omega$):
+  \begin{align}
+    \begin{aligned}
+      \proc{Space}(S_\omega)
+      &= n_\omega\mathcal{H}_0(B_\omega) + n_{\omega 0}\mathcal{H}_0(S_{\omega 0}) + n_{\omega 1}\mathcal{H}_0(S_{\omega 1}) \\
+      &= n_{\omega 0}\log\frac{n_\omega}{n_{\omega 0}} + n_{\omega 1}\log\frac{n_\omega}{n_{\omega 1}} + n_{\omega 0}\mathcal{H}_0(S_{\omega 0}) + n_{\omega 1}\mathcal{H}_0(S_{\omega 1}) \\
+      &= \underbrace{n_{\omega 0}\log\frac{n_\omega}{n_{\omega 0}} + n_{\omega 0}\mathcal{H}_0(S_{\omega 0})}_{(a)} + \underbrace{n_{\omega 1}\log\frac{n_\omega}{n_{\omega 1}} + n_{\omega 1}\mathcal{H}_0(S_{\omega 1})}_{(b)} = (*)
+    \end{aligned}
+  \end{align}
+  For $(a)$ (and analogously $(b)$) we can now substitute the definition of $n_{\omega 0}\mathcal{H}_0(S_{\omega 0}) = \sum_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \log\frac{n_{\omega 0}}{n_{\omega 0\alpha}}$. In this sum, $\alpha$ are all possible ways to extend $\omega 0$ to a prefix corresponding to a vertex in the wavelet tree. We get:
+  \begin{align}
+    \begin{aligned}
+      (a)
+      &= n_{\omega 0}\log\frac{n_\omega}{n_{\omega 0}} + \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \log\frac{n_{\omega 0}}{n_{\omega 0\alpha}} \\
+      &= \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \log\frac{n_\omega}{n_{\omega 0}} + \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \log\frac{n_{\omega 0}}{n_{\omega 0\alpha}} \\
+      &= \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \left(\log\frac{n_\omega}{n_{\omega 0}} + \log\frac{n_\omega 0}{n_{\omega 0\alpha}}\right) \\
+      &= \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \left(\log n_\omega - \log n_{\omega 0} + \log n_{\omega 0} - \log n_{\omega 0\alpha}\right) \\
+      &= \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \log\frac{n_\omega}{n_{\omega 0\alpha}}
+    \end{aligned}
+  \end{align}
+  Plugging the values of $(a)$ and $(b)$ we get
+  \begin{align}
+    \begin{aligned}
+      (*)
+      &= \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 0\alpha} \log\frac{n_\omega}{n_{\omega 0\alpha}} + \sum\limits_{\alpha \in \sigma^{H - L}} n_{\omega 1\alpha} \log\frac{n_\omega}{n_{\omega 1\alpha}} \\
+      &= \sum\limits_{\alpha' \in \sigma^{H - (L - 1)}} n_{\omega\alpha'} \log\frac{n_\omega}{n_{\omega\alpha'}} \\
+      &= n_\omega\mathcal{H}_0(S_\omega)
+    \end{aligned}
+  \end{align}
+  for the space of $S_\omega$.
+\end{Proof}
