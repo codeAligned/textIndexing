@@ -30,10 +30,10 @@
     \label{alg:eliasFanoAccess}
   \end{algorithm}
 
-  Algorithm~\ref{alg:eliasFanoAccess} provides a method to access the $i$-th element of the sequence in constant time.
+  Algorithm~\ref{alg:eliasFanoAccess} provides a method to access the $i$-th element of the sequence in constant time. Variable $p$ is the position of the $i$-th $1$-bit (\proc{Select} works $1$-indexed). To get the number $x$ of zeros until this position, we subtract $i$. Variable $x$ is now giving the high part and we multiply it with $2^{\lceil\log n\rceil - \lfloor\log m\rfloor}$ to shift it in front of the low part.
 \end{Proof}
 
-Theorem~\ref{thm:eliasFanoEncoding} can be used to compress a bitvector~$B$. Let~$n$ be the length of~$B$ and~$m$ be the number of set bits. Further let $X$ be the positions of the set bits. $X$ forms an increasing sequence and therefore be used for compression.
+Theorem~\ref{thm:eliasFanoEncoding} can be used to compress a bitvector~$B$. Let~$n$ be the length of~$B$ and~$m$ be the number of set bits. Further let $X$ be the positions of the set bits. $X$ forms an increasing sequence and Elias-Fano-Encoding can be applied.
 
 \begin{Example}
   \begin{table}[htbp]
@@ -59,7 +59,7 @@ Theorem~\ref{thm:eliasFanoEncoding} can be used to compress a bitvector~$B$. Let
     \caption{Elias-Fano-Encoding for a given sequence $X$.}
     \label{tbl:eliasFanoExample}
   \end{table}
-  Table~\ref{tbl:eliasFanoExample} shows how the bitvector $B=(4,13,15,24,26,27,29)$ gets encoded. The length of $B$ is $7$, so $\lfloor \log 7 \rfloor = 2$ are in the high-part and $\lceil \log 29 \rceil - \lfloor \log 7 \rfloor = 3$ bits are in the low-part. The second row shows the binary representation of each elements, the vertical bar separates the low- and the high-part. Line $\delta$ shows the differences between two consecutive high-parts. Lines $H$ and $L$ now show the compressed high-parts and the explicitly stored low-parts.
+  Table~\ref{tbl:eliasFanoExample} shows how the bitvector $B=(4,13,15,24,26,27,29)$ gets encoded. The length of $B$ is $7$, so $\lfloor \log 7 \rfloor = 2$ bits are in the high-part and $\lceil \log 29 \rceil - \lfloor \log 7 \rfloor = 3$ bits are in the low-part. The second row shows the binary representation of each elements, the vertical bar separates the low- and the high-part. Line $\delta$ shows the differences between two consecutive high-parts. Lines $H$ and $L$ now show the compressed high-parts and the explicitly stored low-parts.
 \end{Example}
 
 \subsection{$\mathcal{H}_0$-Compressed Bitvector}
@@ -75,27 +75,95 @@ Let $B$ be a bitvector of length $n$ with $\kappa$ bits set. The entropy of this
 \end{Theorem}
 
 \begin{Proof}
-  Split the bitvector into blocks of length $K = \frac{1}{2}\log n$ bits. For each block $i$ we store the number of set bits $\kappa_i$ using $\lceil \log K + 1\rceil$ bits. These identifiers sum up to $\mathcal{O}(n\frac{\log\log n}{\log n})$ bits.
+  Split the bitvector into blocks of length $K = \frac{1}{2}\log n$ bits. For each block $i$ we store the number of set bits $\kappa_i$ using $\lceil \log K + 1\rceil$ bits. These identifiers sum up to $\mathcal{O}\left(\frac{n}{K}\log K\right) = \mathcal{O}\left(\frac{n \log\log n}{\log n}\right)$ bits.
 
-  Now we represent each block as a tuple $(\kappa_i,r_i)$. The first element $0 \leq \kappa_i \leq K$ is the number of set bits in this block. The second element $0 \leq r_i < \binom{K}{\kappa_i}$ is the index within the class.
+  Now we represent each block as a tuple $(\kappa_i,r_i)$. The first element $0 \leq \kappa_i \leq K$ is the number of set bits in this block. The second element $0 \leq r_i < \binom{K}{\kappa_i}$ is the index within the class. Each value of $r_i$ uniquely maps to one of the $\binom{K}{\kappa_i}$ possible ways a block of size $K$ can have $\kappa_i$ $1$-bits.
+
+  If we sum these values for all blocks, we get the total space needed to encode $B$:
   \begin{align}
     \begin{aligned}
       \vert B \vert
       &= \sum\limits_{i=0}^\frac{n-1}{K} \left\lceil\log\binom{K}{\kappa_i}\right\rceil \\
       &\leq \log\left(\prod\limits_{i=0}^{\frac{n-1}{K}}\binom{K}{\kappa_i}\right) + \left\lceil\frac{n}{K}\right\rceil \\
       &\leq \log\binom{n}{\kappa_0 + \ldots + \kappa_{(n-1)/K}} + \left\lceil\frac{n}{K}\right\rceil \\
-      &= \log\binom{n}{K}  + \left\lceil\frac{n}{K}\right\rceil\\
+      &= \log\binom{n}{\kappa}  + \left\lceil\frac{n}{K}\right\rceil\\
       &\leq n\mathcal{H}_0(B) + \left\lceil\frac{n}{K}\right\rceil \\
       &= n\mathcal{H}_0(B) + \mathcal{O}\left(\frac{n}{\log n}\right)
     \end{aligned}
   \end{align}
-  In total this gives a space requirement of $n\mathcal{H}_0(B) + \mathcal{O}\left(\frac{n}{\log n}\right) + \mathcal{O}(n\frac{\log\log n}{\log n}) = n\mathcal{H}_0(B) + o(n)$ bits. We will not go into the implementation of \proc{Rank} and \proc{Select} here.
+  The first step transformed the sum of logarithms into a logarithm of a product, where the second summand originates from the ceiling function around the individual logarithms. In the second step a combinatorial argument is used: The number of ways to choose $\kappa_0, \ldots, \kappa_{\frac{n-1}{K}}$ $1$-bits from all blocks is equal to the number of ways to choose $\kappa_0 + \ldots + \kappa_{\frac{n-1}{K}}$ $1$-bits out of the total $n$ bits.
+
+  In total this gives a space requirement of $n\mathcal{H}_0(B) + \mathcal{O}\left(\frac{n}{\log n}\right) + \mathcal{O}\left(n\frac{\log\log n}{\log n}\right) = n\mathcal{H}_0(B) + o(n)$ bits. We will not go into the implementation of \proc{Rank} and \proc{Select} here.
 \end{Proof}
 
-To encode and decode a block with $\kappa$ bits set we must be able to transform the bitstring into the $(\kappa, r)$ pair and vice versa. We can do this on-the-fly by using a \defi{combinatorial number system}{Combinatorial Number System}. The idea is to give them consecutive numbers from $0$ to $\binom{K}{\kappa}-1$ in the order given by their values interpreted as binary numbers.
+To encode and decode a block with $\kappa$ bits set we must be able to transform a bitstring into a $(\kappa, r)$ pair and vice versa. One way to do this is to again use a lookup table. Since there are $2^K$ possible blocks, each needing $\log \lceil K + 1 \rceil$ bits this would need additional $\mathcal{O}\left(\sqrt{n}\log\log n\right)$ bits.
 
-% TODO (pjungeblut): This can nicely be visualised.
+Another way to do it on-the-fly is by using a \defi{combinatorial number system}{Combinatorial Number System}. The idea is to give the blocks with $\kappa_i$ $1$-bits consecutive numbers from $0$ to $\binom{K}{\kappa_i}-1$ in the order given by their values interpreted as binary numbers.
+
 \begin{itemize}
-  \item To encode a given bitstring initialize $r = 0$ and go through the bits from left to right. If the first bit is a $0$, we just drop it, decrement $K$ and continue with the remaining bits. If the first bit is a $1$, we know that there is $\binom{K-1}{\kappa-1}$ other possible bitstrings that start with $0$ and contain $\kappa$ bits. Therefore we increase $r$ by $\binom{K-1}{\kappa-1}$, decrement $K$ and $\kappa$ and continue with the next bit.
-  \item To decode a given pair $(\kappa, r)$, we check if $r \geq \binom{K}{\kappa}$. If so, the first bit is a $1$ and we subtract $\binom{K}{\kappa}$ from $r$, decrease $K$ and $\kappa$ and continue to get the next bit. If $r < \binom{K}{\kappa}$, then the first bit is $0$ and we decrease $K$ and continue to get the next bit.
+  \item Algorithm~\ref{alg:encodeBlock} shows how a given bitstring \id{bits} can be encoded into a pair $(\kappa, r)$. Initially $r$ is set to $0$. We go through the bits from left to right. If the $i$-th bit is zero, we just continue with the next bit. If it is $1$, we know must first number the $\binom{K - i - 1}{\kappa}$ bitstrings starting with a $0$, so we increase $r$ by $\binom{K - i - 1}{\kappa}$. We then decrement $\kappa$ for the next iteration, because there are only $\kappa - 1$ $1$-bits left for the remaining places.
+
+  \begin{algorithm}[htb]
+    \begin{codebox}
+      \Procname{$\proc{EncodeBlock}(\id{bits})$}
+      \li $r \gets 0$
+      \li $\kappa \gets \proc{CountSetBits(\id{bits})}$
+      \li \For $i \gets 0 \To K$
+          \Do
+      \li   \If $\id{bits}[i] \isequal 1$
+            \Then
+      \li     $r \gets r + \binom{K - i - 1}{\kappa}$
+      \li     $\kappa \gets \kappa - 1$
+            \End
+          \End
+      \li \Return $(\kappa, r)$
+    \end{codebox}
+    \caption{Encodes bitstring \id{bits} of length $K$ using a combinatorial number system.}
+    \label{alg:encodeBlock}
+  \end{algorithm}
+
+  \item Algorithm~\ref{alg:decodeBlock} shows how to get the bitstring corresponding to a $(\kappa, r)$ pair. We extract the bits consecutively from left to right. If $r \geq \binom{K - i - 1}{\kappa}$, then the first bit was a $1$. In this case, we decrement $\kappa$ for the further places and reduce $r$ by $\binom{K - i - 1}{\kappa}$. Otherwise the first place was a $0$.
+
+  \begin{algorithm}[htb]
+    \begin{codebox}
+      \Procname{$\proc{DecodeBlock}(\kappa, r)$}
+      \li $\id{bits} \gets \varepsilon$
+      \li \For $i \gets 0 \To K$
+          \Do
+      \li   \If $r \geq \binom{K - i - 1}{\kappa}$
+            \Then
+      \li     $\id{bits} \gets \id{bits} + \texttt{1}$
+      \li     $r \gets r - \binom{K - i - 1}{\kappa}$
+      \li     $\kappa \gets \kappa - 1$
+            \Else
+      \li     $\id{bits} \gets \id{bits} + \texttt{0}$
+            \End
+          \End
+      \li \Return \id{bits}
+    \end{codebox}
+    \caption{Decodes a $(\kappa, r)$ pair to a bitstring of length $K$.}
+    \label{alg:decodeBlock}
+  \end{algorithm}
 \end{itemize}
+
+All the binomial coefficients needed in Algorithms~\ref{alg:encodeBlock} and~\ref{alg:decodeBlock} need to be precomputed to allow $O(1)$ access.
+
+% TODO (pjungeblut): Visualize example with Pascal's triangle.
+\begin{Example}
+  Assume $K = 6$ and we are given a block $\id{bits} = \texttt{100110}$. It contains three $1$-bits, so $\kappa = 1$. We will now find $r$:
+  \begin{enumerate}
+    \item Initialize $r = 0$.
+    \item The first bit is $1$, so increase $r$ by $\binom{6 - 0 - 1}{3} = 10$.
+    \item The second and third bits are $0$, so we skip them.
+    \item The fourth and the fifth bit are $1$, we increase $r$ by $\binom{6 - 3 - 1}{2} = 1$ and by $\binom{6 - 4 - 1}{1} = 1$, so $r$ becomes $12$. 
+  \end{enumerate}
+  We see that Algorithm~\ref{alg:encodeBlock} mapped $\texttt{100110} \mapsto (3,12)$. To check our calculations we will now decode this value:
+  \begin{enumerate}
+    \item $12 \geq \binom{6 - 0 - 1}{3} = 10$, so the first bit is a $1$ and we reduce $r$ by $10$ to $2$.
+    \item $2 < \binom{6 - 1 - 1}{2} = 6$ and $2 < \binom{6 - 2 - 1}{2} = 3$, so the second and third bit are both $0$.
+    \item $2 \geq \binom{6 - 3 - 1}{2} = 1$, so the fourth bit is a $1$ and we reduce $r$ by $1$ to $1$.
+    \item $1 \geq \binom{6 - 4 - 1}{1} = 1$, so the fifth bit is again a $1$ an we further reduce $r$ by $1$ to $0$.
+    \item $0 < \binom{6 - 5 - 1}{0} = 0$, so the sixth bit is $0$.
+  \end{enumerate}
+  We see, that Algorithm~\ref{alg:decodeBlock} correctly mapped $(3,12) \mapsto \texttt{100110}$.
+\end{Example}
