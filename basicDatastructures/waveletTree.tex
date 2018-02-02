@@ -25,7 +25,7 @@
   \drawing{basicDatastructures/tikz/waveletTreeExample.tex}{The wavelet tree for the string "abracadabra".}{waveletTreeExample}
 \end{Example}
 
-When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:waveletTree}, each vertex can be described by two indices giving the position of the bitvector of the vertex in $B$. For example the root corresponds to the pair $[0,n-1]$. Algorithm~\ref{alg:waveletTreeLevel} shows how to get the level of a vertex $v$ of the wavelet tree. This just uses the fact, that every level contains $n$ bits. Algorithm~\ref{alg:waveletTreeSize} just calculates the length of the string stored in the given vertex. Algorithm~\ref{alg:waveletTreeLeftChild} and Algorithm~\ref{alg:waveletTreeRightChild} return the indices for the left and the right child of the given vertex. Assuming that we can execute the rank queries in constant time (Theorem~\ref{thm:bitvectorRank}), they both run in constant time. It is also possible to implement a \proc{Parent}-function, but this needs additional information, such as whether the current vertex is a left or a right child of its parent.
+When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:waveletTree}, each vertex can be described by two indices giving the position of the bitvector of the vertex in $B$. For example the root corresponds to the pair $[0,n-1]$. Algorithm~\ref{alg:waveletTreeLevel} shows how to get the level of a vertex $v$ of the wavelet tree. This just uses the fact, that every level contains $n$ bits. Algorithm~\ref{alg:waveletTreeSize} calculates the length of the string stored in the given vertex. Algorithm~\ref{alg:waveletTreeLeftChild} and Algorithm~\ref{alg:waveletTreeRightChild} return the indices for the left and the right child of the given vertex. Assuming that we can execute the rank queries in constant time (Theorem~\ref{thm:bitvectorRank}), they both run in constant time. It is also possible to implement a \proc{Parent}-function, but this needs additional information, such as whether the current vertex is a left or a right child of its parent.
 
 \begin{algorithm}[htb]
   \begin{codebox}
@@ -73,7 +73,7 @@ When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:w
 \end{Theorem}
 
 \begin{Proof}
-  To access the $i$-th element we check the $i$-th position in the root-bitvector. If it is $0$, the element is stored in the left child and the new index there is $i - \proc{Rank}(i)$. If it is $1$, the element is in the right child and the new index there is $i - \proc{Rank}_0(i)$, where $\proc{Rank}_0(i) := i - \proc{Rank}(i)$ is the number of $0$-bits before position $i$.
+  To access the $i$-th element we check the $i$-th position in the root-bitvector. If it is $0$, the element is stored in the left child and the new index there is $i - \proc{Rank}_1(i)$. If it is $1$, the element is in the right child and the new index there is $i - \proc{Rank}_0(i)$.
 
   This can be done in $\mathcal{O}(\log\sigma)$, because the wavelet tree has a height of $\log\sigma$ and the rank queries can be done in constant time on bitvectors.
 \end{Proof}
