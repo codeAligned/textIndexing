@@ -47,7 +47,7 @@ When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:w
 
 \begin{algorithm}[htb]
   \begin{codebox}
-    \Procname{$\proc{Left-Child}(v=[l,r])$}
+    \Procname{$\proc{LeftChild}(v=[l,r])$}
     \li $l' \gets l + n$
     \li $r' \gets l' + \proc{Size}(v) - (\proc{Rank}(r + 1) - \proc{Rank}(l)) - 1$
     \li \Return $[l',r']$
@@ -58,7 +58,7 @@ When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:w
 
 \begin{algorithm}[htb]
   \begin{codebox}
-    \Procname{$\proc{Right-Child}(v=[l,r])$}
+    \Procname{$\proc{RightChild}(v=[l,r])$}
     \li $r' \gets r + n$
     \li $l' \gets r' - (\proc{Rank}(r + 1) - \proc{Rank}(l) - 1)$
     \li \Return $[l',r']$
