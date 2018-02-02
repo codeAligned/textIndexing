@@ -29,5 +29,35 @@
     L &= \log^2 n \\
     S &= \frac{1}{2} \log n
   \end{align}
-  The total amount of space needed is in $\mathcal{O}(\frac{n}{\log n} + \frac{n\log\log n}{\log n} + \sqrt{n}\log n\log\log n)$ bits.
+
+  Let's look at the space needed:
+  \begin{itemize}
+    \item Prefix sums among the superblocks:
+    \begin{align}
+      \begin{aligned}
+        \mathcal{O}\left(\frac{n}{L}\log n\right)
+        &= \mathcal{O}\left(\frac{n}{\log^2 n}\log n\right)\\
+        &= \mathcal{O}\left(\frac{n}{\log n}\right)
+      \end{aligned}
+    \end{align}
+    \item Prefix sums among the blocks:
+    \begin{align}
+      \begin{aligned}
+        \mathcal{O}\left(\frac{n}{S}\log L\right)
+        &= \mathcal{O}\left(\frac{n}{\log n}\log\log^2 n\right) \\
+        &= \mathcal{O}\left(\frac{n}{\log n} \cdot \log\log n\right) \\
+        &= \mathcal{O}\left(\frac{n \log\log n}{\log n}\right)
+      \end{aligned}
+    \end{align}
+    \item The lookup tables for each block. There are $2^S$ possible blocks and for each of them we need to store $S$ prefix sums in $\mathcal{O}(\log S)$ bits:
+    \begin{align}
+      \begin{aligned}
+        \mathcal{O}\left(2^S \cdot S \cdot \log S\right)
+        &= \mathcal{O}\left(2^{\frac{1}{2}\log n} \cdot \frac{1}{2}\log n \cdot \log \frac{1}{2}\log n\right) \\
+        &= \mathcal{O}\left(\sqrt{n}\log n \log\log n\right)
+      \end{aligned}
+    \end{align}
+  \end{itemize}
+
+  The total amount of space needed is therefore $\mathcal{O}\left(\frac{n}{\log n} + \frac{n\log\log n}{\log n} + \sqrt{n}\log n\log\log n\right) = o(n)$ bits.
 \end{Proof}
