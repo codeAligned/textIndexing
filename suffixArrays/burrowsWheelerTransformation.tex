@@ -45,7 +45,7 @@ The \id{BWT} needs $n\log\sigma$ bits of space if it is stored uncompressed. The
 \end{Example}
 
 \begin{Theorem}
-  We can search for all occurrences of a string $S$ in $T$ using the suffix array \id{SA} and the Burrwos-Wheeler-Transform \id{BWT} over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is knows as \defi{backward search}{Backward Search}.
+  We can search for all occurrences of a string $S$ in $T$ using the suffix array \id{SA} and the Burrwos-Wheeler-Transform \id{BWT} over $T$ in time $\mathcal{O}(m\log \sigma)$, where $m = \vert S \vert$. This is known as \defi{backward search}{Backward Search}.
 \end{Theorem}
 
 \begin{Proof}
@@ -66,7 +66,7 @@ The \id{BWT} needs $n\log\sigma$ bits of space if it is stored uncompressed. The
 The intuition behind Equation~\ref{eq:backwardSearchStartPos} and~\ref{eq:backwardSearchEndPos} is the following: $C[c]$ gives the start position of all suffixes in \id{SA} starting with the $(i+1)$-th character $c$ of $S$. But of course, only some continuous subsequence of them also starts with the whole last $i+1$ characters of $S$. This subsequence is calculated with the $\proc{Rank}_c$ queries: The \id{BWT} tells us, which of the suffixes in $[\id{sp}_i,\id{ep}_i]$ are preceded with $c$ (the $(i+1)$-th last character of $S$). To now calculate $\id{sp}_{i+1}$ from $i$, we need to know, how many suffixes starting with $c$ are lexicographically smaller than the $c$-preceded suffixes in $[\id{sp}_i,\id{ep}_i]$. The answer is just $\proc{Rank}_c(\id{sp}_i, \id{BWT})$ as in Equation~\ref{eq:backwardSearchStartPos}. For $\id{ep}_{i+1}$ Equation~\ref{eq:backwardSearchEndPos} additionally counts the number of suffixes of $T$ in $[\id{sp}_i,\id{ep}_i]$ preceded by $c$.
 
 \begin{Example}
-  We will again search for string $S=\texttt{bar}$ in the text $T=\texttt{abracadabrabarbara\$}$, this time using backward search. The suffix array and Burrows-Wheeler-Transformation of $T$ is given in Table~\ref{tbl:burrowsWheelerTransformationExample}.
+  We will again search for string $S=\texttt{bar}$ in the text $T=\texttt{abracadabrabarbara\$}$, this time using backward search. The suffix array and Burrows-Wheeler-Transformation of $T$ are given in Table~\ref{tbl:burrowsWheelerTransformationExample}.
 
   Array $C$ is given by the following Table~\ref{tbl:backwardSearchCExample} for text $T$.
   \begin{table}[htb]
