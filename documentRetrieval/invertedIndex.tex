@@ -1,0 +1,51 @@
+\section{Inverted Index}
+
+\begin{Definition}
+  In an \defi{inverted index}{Inverted Index} (IVI) for each term $q$ (excluding the sentinels) a list of pairs of document id and term frequency is stored. The pairs are ordered according to their document ids. Further for each term the document frequency is stored.
+\end{Definition}
+
+To process a query we sequentially iterate through the lists containing the query phrases and calculate the ranking function. The query complexity therefore depends on the document frequency.
+
+It is not possible to answer phrase queries with this variant of an inverted index. Direct support of arbitrary phrase queries would require $\mathcal{O}(n^2)$ lists.
+
+\begin{Example}
+  Consider the three documents $\mathcal{D} = \{d_1, d_2, d_3\}$:
+  \begin{align*}
+    d_1 &: \text{is big data really big} \\
+    d_2 &: \text{is it big in science} \\
+    d_3 &: \text{big data is big}
+  \end{align*}
+  We will get the following inverted index:
+  \begin{align*}
+    \text{big} &: \{(1,2), (2,1), (3,2)\}  & F_{\mathcal{D}, \text{big}} = 3 \\
+    \text{data} &: \{(1,1), (3,1)\} & F_{\mathcal{D}, \text{data}} = 2 \\
+    \text{in} &: \{(2,1)\} & F_{\mathcal{D}, \text{in}} = 1 \\
+    \text{is} &: \{(1,1), (2,1), (3,1)\} & F_{\mathcal{D}, \text{is}} = 3 \\
+    \text{really} &: \{(1,1)\} & F_{\mathcal{D}, \text{really}} = 1 \\
+    \text{science} &: \{(2,1)\} & F_{\mathcal{D}, \text{science}} = 1
+  \end{align*}
+\end{Example}
+
+\begin{Theorem}
+  An inverted index can be represented in $n\mathcal{H}_0(\mathcal{D}) + 3n + o(n) + \mathcal{O}(\sigma \log n)$ bits, where $n = \sum_{d \in \mathcal{D}} n_d$ and $f_{\mathcal{D},q} = \sum_{d \in \mathcal{D}} f_{d,q}$.
+\end{Theorem}
+
+\begin{Proof}
+  For each term we use Elias-Fano-Encoding to store the increasing list of document ids. The list of frequencies itself is unary encoded decreased by one (each frequency~$x$ is encoded by~$x$ bits). With this representation we get:
+  \begin{align}
+    \begin{aligned}
+      \proc{Space(IVI)}
+      &\stackrel{\mathclap{\text{\ref{def:eliasDeltaEncoding}}}}{=}
+      \sum\limits_{q \in \Sigma}
+      \underbrace{2F_{\mathcal{D},q} + F_{\mathcal{D},q} \log\frac{N}{F_{\mathcal{D}, q}} + o(F_{\mathcal{D},q})}_{\text{document ids}} +
+      \underbrace{f_{\mathcal{D},q}}_{\text{frequencies}} +
+      \underbrace{\mathcal{O}(\log n)}_{\text{pointer}} \\
+      &\leq 3n + o(n) + \mathcal{O}(\sigma \log n) + \sum\limits_{q \in \Sigma} F_{\mathcal{D},q}\log\frac{n}{F_{\mathcal{D},q}} \\
+      &\stackrel{\mathclap{(*)}}{\leq}
+      3n + o(n) + \mathcal{O}(\sigma \log n) +
+      n\sum\limits_{q \in \Sigma}\frac{f_{\mathcal{D},q}}{n}\log\frac{n}{f_{\mathcal{D},q}} \\
+      &= n\mathcal{H}_0(\mathcal{D}) + 3n + o(n) + \mathcal{O}(\sigma \log n)
+    \end{aligned}
+  \end{align}
+  In $(*)$ we assumed that $f_{\mathcal{D},q} < \frac{n}{2}$ for all $q$. When the inverted index contains a sufficient amount of documents, this is safe to assume.
+\end{Proof}

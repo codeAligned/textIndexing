@@ -4,7 +4,7 @@
   The following document dependent factors appear in many different similarity measures~$\mathcal{S}$:
   \begin{itemize}
     \item $f_{d,q}$ is the \defi{term frequency}{Term Frequency}. It counts the number of times, word $q$ appears in document~$d$.
-    \item $F_{D,q}$ is the \defi{document frequency}{Document Frequency}. It counts the number of distinct documents from~$D$ containing~$q$ at least once.
+    \item $F_{\mathcal{D},q}$ is the \defi{document frequency}{Document Frequency}. It counts the number of distinct documents from~$\mathcal{D}$ containing~$q$ at least once.
   \end{itemize}
 \end{Definition}
 
@@ -14,7 +14,7 @@
     \mathcal{S}_{Q,d}^{BM25} = \sum\limits_{q \in Q}
     \frac{\left(k_1 + 1\right)f_{d,q}}{k_1\left(1 - b + \frac{n_d}{n_{avg}}\right) + f_{d,q}}
     \cdot f_{Q,q} \cdot
-    \ln\frac{N - F_{D,q} + 0.5}{F_{D,q} + 0.5}
+    \ln\frac{N - F_{\mathcal{D},q} + 0.5}{F_{\mathcal{D},q} + 0.5}
   \end{align}
   Here $n_d$ is the length of document $d$ and $n_{avg}$ is the average document length.
 \end{Definition}
