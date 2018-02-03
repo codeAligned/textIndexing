@@ -4,7 +4,7 @@ Theorem~\ref{thm:psiValuesIncreasing} tells us that the values of $\Psi$ form at
 
 \subsection{Elias-Fano-Encoded $\id{CSA}_\Psi$}
 
-We can use Elias-Fano-Encoding (Theorem~\ref{thm:eliasFanoEncoding}) to encode each of the increasing subsequences of $\Psi$. Let's calculate the needed space for each of these sequences. In the following equation the alphabet $\Sigma$ is the set of possible gap lengths. For each $c \in \Sigma$, $n_c$ is the number of occurrences of $c$ as a gap in the increasing sequence.
+We can use Elias-Fano-Encoding to encode each of the increasing subsequences of $\Psi$, each in $[0, n-1]$. Let's calculate the needed space for each of these sequences. For each $c \in \Sigma$, $n_c$ is the number of occurrences of $c$ in the text (so the length of the increasing run corresponding to the suffixes starting with $c$).
 
 \begin{align}
   \begin{aligned}
@@ -42,7 +42,7 @@ In addition to these $2n + n\mathcal{H}_0(T) + o(n)$ bits we need another $\math
   \label{alg:compareCompressedSuffixArrayPsi}
 \end{algorithm}
 
-We can use Algorithm~\ref{alg:compareCompressedSuffixArrayPsi} to search for some pattern $P$ in the compressed suffix array. All we need to store is array $C$ giving the first position for each character and array $\Psi$. We can then binary search for the correct position each time using \proc{Compare-CSA} to check whether the corresponding entry matches $P$. \proc{Compare-CSA} compares the pattern from left to right. Index $C[P[k] + 1] - 1$ in Line~\ref{line:compareCSACheckSmaller} is the last position in the suffix array starting with $P[k]$ while index $C[P[k]]$ is the first position in the suffix array starting with $P[k]$. The whole process needs time $\mathcal{O}(m\log n \log \sigma)$.
+We can use Algorithm~\ref{alg:compareCompressedSuffixArrayPsi} to search for some pattern $P$ in the compressed suffix array. All we need to store is array $C$ giving the first position for each character and array $\Psi$. We can then binary search for the correct position each time using \proc{Compare-CSA} to check whether the corresponding entry matches $P$. \proc{Compare-CSA} compares the pattern from left to right. Index $C[P[k] + 1] - 1$ in Line~\ref{line:compareCSACheckSmaller} is the last position in the suffix array starting with $P[k]$ while index $C[P[k]]$ is the first position in the suffix array starting with $P[k]$. The whole process needs time $\mathcal{O}(m\log n)$.
 
 \subsection{Elias-$\delta$-Encoded $\id{CSA}_\Psi$}
 
@@ -50,7 +50,7 @@ Another way to encode and compress the values of $\Psi$ is by using an Elias-$\d
 
 \begin{Definition}
   \label{def:eliasDeltaEncoding}
-  \defi{Elias-$\delta$-Encoding}{Elias-$\delta$-Encoding} is a way to represent a positive integer $x$ using $\lfloor\log (x)\rfloor+2\lfloor(\lfloor\log (x)\rfloor + 1)\rfloor+1$ bits.
+  \defi{Elias-$\delta$-Encoding}{Elias-$\delta$-Encoding} is a way to represent a positive integer $x$ using $\lfloor\log (x)\rfloor+2\lfloor\log(\lfloor\log (x)\rfloor + 1)\rfloor+1$ bits.
 
   To encode $x$ execute the following steps:
   \begin{enumerate}
@@ -62,7 +62,7 @@ Another way to encode and compress the values of $\Psi$ is by using an Elias-$\d
   \end{enumerate}
 \end{Definition}
 
-Let's now calculate the space needed to store the values of $\Psi$ if an Elias-$\delta$-Encoding is used. Again, the set of possible gaps is the alphabet and $n_c$ is the number of occurrences of a symbol (i.e. gap) in the values of $\Psi$. Furhter we define
+Let's now calculate the space needed to store the values of $\Psi$ if an Elias-$\delta$-Encoding is used. For each character $c \in \Sigma$ we gap-encode its increasing $\Psi$ sequence. We define 
 \begin{align}
   g_{c,i} &=
   \begin{cases}
@@ -70,8 +70,7 @@ Let's now calculate the space needed to store the values of $\Psi$ if an Elias-$
     \Psi[C[c] + i] - \Psi[C[c] + i - 1] & \text{for $i > 0$}
   \end{cases}
 \end{align}
-to be the $i$-th gap length of the increasing sequence corresponding to symbol $c$.
-
+to be the $i$-th gap length of the increasing sequence corresponding to symbol $c$. The space for the compressed suffix array is then:
 \begin{align}
   \begin{aligned}
     \vert \id{CSA}_\Psi \vert
@@ -82,8 +81,9 @@ to be the $i$-th gap length of the increasing sequence corresponding to symbol $
     \left(\log\frac{n}{n_c}+2\log\log\frac{n}{n_c}\right) \\
     &=\mathcal{O}(n) + n\sum\limits_{c \in \Sigma}\frac{n_c}{n}
     \left(\log\frac{n}{n_c}+2\log\log\frac{n}{n_c}\right) \\
+    &=\mathcal{O}(n) + n\sum\limits_{c \in \Sigma}\frac{n_c}{n}\log\frac{n}{n_c} + n\sum\limits_{c \in \Sigma}\frac{2n_c}{n}\log\log\frac{n}{n_c} \\
     &=n\mathcal{H}_0(T) + \mathcal{O}(n \log\log n)
   \end{aligned}
 \end{align}
 
-In the first step we just applied the definition of Elias-$\delta$-Encoding, before estimating an upper bound for the logarithms in the second step. In the third step we now used that the summation index $i$ does not appear in the expression anymore. The we split the summation into two sums and plug the definition for the zeroth-order entropy.
+In the first step we just applied the definition of Elias-$\delta$-Encoding, before estimating an upper bound for the logarithms in the second step. In the third step we now used that the summation index $i$ does not appear in the expression anymore. Then we split the summation into two sums and plug the definition for the zeroth-order entropy.
