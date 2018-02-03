@@ -60,8 +60,24 @@ The \id{BWT} needs $n\log\sigma$ bits of space if it is stored uncompressed. The
   \end{align}
   where $c$ is the $(i+1)$-th last character of $S$. Both operations can be done in $\mathcal{O}(\log\sigma)$ using a wavelet tree over the \id{BWT} array. The search needs $m$ steps, so the total runtime is in $\mathcal{O}(m\log\sigma)$.
 
-  The interval given by $[\id{sp}_m,\id{ep}_m]$ in the suffix array corresponds to all occurrences of $S$ in $T$ and the positions are $\id{SA}[\id{sp}_m], \ldots, \id{SA}[\id{ep}_m]$.
+  The interval given by $[\id{sp}_m,\id{ep}_m]$ in the suffix array corresponds to all occurrences of $S$ in $T$ and the positions are $\id{SA}[\id{sp}_m], \ldots, \id{SA}[\id{ep}_m]$. \proc{Backward-Search} is given in pseudocode in Algorithm~\ref{alg:backwardSearch}.
 \end{Proof}
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Backward-Search}(P)$}
+    \li $\id{sp} \gets 0$
+    \li $\id{ep} \gets n - 1$
+    \li \For $i \gets m - 1 \Downto 0$
+        \Do
+    \li   $\id{sp} \gets C[P[i]] + \proc{Rank}_c(\id{sp}, \id{BWT})$
+    \li   $\id{ep} \gets C[P[i]] + \proc{Rank}_c(\id{ep} + 1, \id{BWT}) - 1$
+        \End
+    \li \Return $(\id{sp}, \id{ep})$
+  \end{codebox}
+  \caption{Backward search for a pattern $P$ of length $m$.}
+  \label{alg:backwardSearch}
+\end{algorithm}
 
 The intuition behind Equation~\ref{eq:backwardSearchStartPos} and~\ref{eq:backwardSearchEndPos} is the following: $C[c]$ gives the start position of all suffixes in \id{SA} starting with the $(i+1)$-th character $c$ of $S$. But of course, only some continuous subsequence of them also starts with the whole last $i+1$ characters of $S$. This subsequence is calculated with the $\proc{Rank}_c$ queries: The \id{BWT} tells us, which of the suffixes in $[\id{sp}_i,\id{ep}_i]$ are preceded with $c$ (the $(i+1)$-th last character of $S$). To now calculate $\id{sp}_{i+1}$ from $i$, we need to know, how many suffixes starting with $c$ are lexicographically smaller than the $c$-preceded suffixes in $[\id{sp}_i,\id{ep}_i]$. The answer is just $\proc{Rank}_c(\id{sp}_i, \id{BWT})$ as in Equation~\ref{eq:backwardSearchStartPos}. For $\id{ep}_{i+1}$ Equation~\ref{eq:backwardSearchEndPos} additionally counts the number of suffixes of $T$ in $[\id{sp}_i,\id{ep}_i]$ preceded by $c$.
 
