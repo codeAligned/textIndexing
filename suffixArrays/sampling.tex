@@ -24,14 +24,14 @@ No matter which of the above sampling strategies above is used, the code in Algo
 
 \begin{algorithm}[htb]
   \begin{codebox}
-  \Procname{$\proc{Access-Sampled-Suffix-Array}(i)$}
-  \li $k \gets 0$
-  \li \While $B[i] \isequal 0$
-      \Do
-  \li   $k \gets k + 1$
-  \li   $i \gets \id{LF}[i]$    
-      \End
-  \li \Return $\id{SA'}[\proc{Rank}_1(i, B)] + k$
+    \Procname{$\proc{Access-Sampled-Suffix-Array}(i)$}
+    \li $k \gets 0$
+    \li \While $B[i] \isequal 0$
+        \Do
+    \li   $k \gets k + 1$
+    \li   $i \gets \id{LF}[i]$    
+        \End
+    \li \Return $\id{SA'}[\proc{Rank}_1(i, B)] + k$
   \end{codebox}
   \caption{Access the sampled suffix array.}
   \label{alg:sampledSuffixArrayAccess}
