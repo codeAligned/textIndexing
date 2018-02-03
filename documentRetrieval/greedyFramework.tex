@@ -1,0 +1,13 @@
+\section{GREEDY framework}
+
+\begin{Definition}
+  Let $\mathcal{D}$ be the \defi{document array}{Document Array} of length $n$. For each suffix $\id{SA}[i]$ the document array $\mathcal{D}[i]$ contains the identifier of the document, in which suffix $\id{SA}[i]$ starts. A suffix array (or suffix tree) with this information added is called \defi{generalized suffix array}{Generalized Suffix Array} (or \defi{generalized suffix tree}{Generalized Suffix Tree}).
+\end{Definition}
+
+\begin{Definition}
+  The \defi{GREEDY framework}{GREEDY Framework} for single term $f_{d,q}$-ranking of Culpepper et al. \cite{Culpepper2010} consists of:
+  \begin{itemize}
+    \item A compressed suffix array \id{CSA} of concatenation $\mathcal{D}$.
+    \item A wavelet tree of the document array of $D$.
+  \end{itemize}
+\end{Definition}
