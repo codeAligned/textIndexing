@@ -8,6 +8,30 @@
   The \defi{GREEDY framework}{GREEDY Framework} for single term $f_{d,q}$-ranking of Culpepper et al. \cite{Culpepper2010} consists of:
   \begin{itemize}
     \item A compressed suffix array \id{CSA} of concatenation $\mathcal{D}$.
-    \item A wavelet tree of the document array of $D$.
+    \item A wavelet tree \id{WTD} of the document array of $D$.
   \end{itemize}
 \end{Definition}
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Ranked-Search}(q, k)$}
+    \li $[l,r] \gets \proc{Backward-Search}(CSA, q)$
+    \li $\attribii{pq}{push}(\langle r - l + 1, [l,r], \attribii{WTD}{root}()\rangle)$ \>\>\>\>\>\>\>\>\Comment Max-PQ sorted by interval size.
+    \li $h \gets 0$
+    \li \While $h < k$ and not $\attribii{pq}{empty}()$
+        \Do
+    \li   $\langle s, [l,r], v \rangle \gets \attribii{pq}{pop}()$
+    \li   \If \attribii{WTD}{is\_leaf}()
+          \Then
+    \li     \textbf{output} $\langle \attribii{WTD}{symbol}(v) \rangle$
+    \li     $h \gets h + 1$
+    \li   \Else
+    \li     $\langle \langle [l_l, r_l], v_l \rangle \langle [l_r, r_r], v_r \rangle \rangle \gets \attribii{WTD}{expand}(v, [l,r])$
+    \li     $\attribii{pq}{push}(\langle r_l - l_l + 1, [l_l, r_l], v_l \rangle)$
+    \li     $\attribii{pq}{push}(\langle r_r - l_r + 1, [l_r, r_r], v_r \rangle)$
+          \End
+        \End
+  \end{codebox}
+  \caption{Search for top-$k$ documents containing $q$.}
+  \label{alg:greedyRankedSearch}
+\end{algorithm}
