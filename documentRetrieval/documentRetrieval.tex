@@ -1,0 +1,10 @@
+\chapter{Document Retrieval}
+
+We are given a collection $D' = \{d_1, \ldots, d_{N-1}\}$ of documents. Each of $d_i$ is a string over an alphabet $\Sigma' = [2,\sigma]$ terminated by a sentinel symbol $1$ (or \#). We define $D = D' \cup d_0$ with a sentinel document $d_0 = 0$. We now want to answer word queries $Q = \{q_0, \ldots, q_{m-1}\}$. $Q$ is called \defi{bag of words}{Bag of Words} and is an unordered set of size $m$.
+
+\begin{Definition}
+  Given a collection $D$, a query $Q$ of length $m$ and a similarity measure $\mathcal{S} : D \times \mathcal{P}_{=m}(\Sigma') \to \mathbb{R}$. Calculate the \defi{top-k documents}{Top-k Documents} of $D$ with regard to $Q$ an $\mathcal{S}$.\newline
+  That is a sorted list $T = \{\tau_0, \ldots, \tau_{k-1}\}$ with $\mathcal{S}(d_{\tau_i}, Q) \geq \mathcal{S}(d_{\tau_{i + 1}}, Q)$ for $0 \leq i < k$ and $\mathcal{S}(d_{\tau_{k-1}},Q) \geq \mathcal{S}(d_j, Q)$ for $j \not\in T$.
+\end{Definition}
+
+\input{documentRetrieval/similarityMeasures.tex}
