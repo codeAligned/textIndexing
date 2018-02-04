@@ -10,6 +10,7 @@
     \item A compressed suffix array \id{CSA} of concatenation $\mathcal{D}$.
     \item A wavelet tree \id{WTD} of the document array of $D$.
   \end{itemize}
+  The pseudocode \proc{Ranked-Search} for a query $q$ is given in Algorithm~\ref{alg:greedyRankedSearch}. The first step is a backward search in the compressed suffix array \id{CSA} to get the interval $[l,r]$ of all occurrences of $q$. This interval is stored in a priority queue. As long as this is not empty and we do not yet extracted $k$ documents, we take the longest interval from the priority queue. If this is a leave, we output its corresponding symbol as a hit. Otherwise we split the interval into the corresponding intervals of the two children in the wavelet tree \id{WTD}.
 \end{Definition}
 
 \begin{algorithm}[htb]
@@ -35,3 +36,14 @@
   \caption{Search for top-$k$ documents containing $q$.}
   \label{alg:greedyRankedSearch}
 \end{algorithm}
+
+\begin{Example}
+  Consider the text $T = \omega_2\omega_1\omega_3\omega_3\#\omega_1\omega_1\omega_4\omega_1\#\omega_1\omega_4\omega_3\omega_1\#\omega_5\omega_5\#$ with $\# < \omega_1 < \ldots < \omega_5$. The suffix array is $\id{SA} = \{4,9,14,17,{\color{red}8,13,5,6,1,10},12,0,3,2,7,11,16,15\}$ and the document array is $\mathcal{D} = \{0,1,2,3,{\color{red}1,2,1,1,0,2},2,0,0,0,1,2,3,3\}$. The red parts are the range \proc{Backward-Search} returned for query $\omega_1$. The interval in $\mathcal{D}$ corresponds to the multiset of all documents containing $\omega_1$. Figure~\ref{fig:greedyWaveletTree} shows the wavelet tree over $\mathcal{D}$ with the interesting intervals marked in red. The leave intervals are extracted in order $1,2,0$. So for a top-$2$-query, we would have found $d_1$ ($3$ occurrences) and $d_2$ ($2$ occurrences).
+
+  \begin{figure}[htb]
+    \centering
+    \input{documentRetrieval/tikz/greedyWaveletTree.tex}
+    \caption{The wavelet tree over the document array $\mathcal{D}$. The interval with the documents corresponding to query $q = \omega_1$ are marked in red.}
+    \label{fig:greedyWaveletTree}
+  \end{figure}
+\end{Example}
