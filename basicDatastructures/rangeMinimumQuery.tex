@@ -1,0 +1,24 @@
+\section{Range Minimum Query}
+
+\begin{Definition}
+  Given an array $A[0,n-1]$ from a totally ordered set. A \defi{range minimum query}{Range Minimum Query} $\proc{RMQ}(i,j)$ calculates the index $k$ of the smallest element $A[k]$ in a range $[i,j]$.
+\end{Definition}
+
+A complete precomputation would be able to answer the queries in $\mathcal{O}(1)$ but would need $\mathcal{O}(n^2\log n)$ bits space. 
+
+\begin{Theorem}
+  Range minimum queries can be answered in $\mathcal{O}(1)$ using an index of size $\mathcal{O}(n\log^2 n)$ bits.
+\end{Theorem}
+
+\begin{Proof}
+  Precalculate an array $M[0,n-1][\lceil\log n\rceil]$ with $M[i][j] = \proc{RMQ}(i, i + 2^j - 1)$. Then (using that $\min$ is idempotent)
+  \begin{align}
+    \proc{RMQ}(i, j) = \min \{M[i][r], M[j - 2^i + 1][r]\}
+  \end{align}
+  where $r = \max \{r \mid 2^r \leq j - i + 1\}$. Table $M$ is known as a \defi{sparse table}{Sparse Table}. Range maximum queries work analogously.
+\end{Proof}
+
+% TODO (pjungeblut): Proof this theorem about succint RMQ.
+\begin{Theorem}
+  Range minimum queries can be answered in $\mathcal{O}(1)$ per query using an index of size $2n + o(n)$ bits.
+\end{Theorem}
