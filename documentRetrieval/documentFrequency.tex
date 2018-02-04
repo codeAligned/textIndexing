@@ -67,3 +67,40 @@ To find the number of repeated documents in the subtree of an inner node, number
 \begin{Proof}
   The bitvector $H$ has maximum size $2n - N$. Additionally $o(n)$ bits for a constant time select structure are needed. The only thing left is the space needed for \id{CSA}.
 \end{Proof}
+
+\subsection{Calculating $F_{\mathcal{D}_v, q}$}
+
+Let $F_{\mathcal{D}_v, q}$ be the subset of documents which are represented by a node in the wavelet tree over the document array. To compute it efficiently we introduce another array:
+
+\begin{Definition}
+  The \defi{repetition array}{Repetition Array} $R$ contains for each $0$ in $H$ the corresponding repeated element of the associated node.
+\end{Definition}
+
+We can build a wavelet tree \id{WTD} over the document array and a wavelet tree \id{WTR} over the repetition array. Using $\proc{Select}_1$ we can as above convert an interval $[l,r]$ of the suffix array into ranges in the two wavelet trees. When traversing \id{WTD} we can simultaneously traverse \id{WTR}. The size of the range in \id{WTR} always counts the number of repetitions.
+
+\begin{Example}
+  Continuing above example, we get for $H$ and $R$:
+  \begin{align*}
+    H &= 1
+    \underbrace{1}_{v_1}
+    \underbrace{1}_{v_2}
+    \underbrace{1}_{v_3}
+    \underbrace{0001}_{v_4}
+    \underbrace{1}_{v_5}
+    \underbrace{1}_{v_6}
+    \underbrace{01}_{v_7}
+    \underbrace{01}_{v_8}
+    \underbrace{01}_{v_9}
+    \underbrace{0001}_{v_{10}}
+    \underbrace{1}_{v_{11}}
+    \underbrace{1}_{v_{12}}
+    \underbrace{01}_{v_{13}} \\
+    R &=
+    \underbrace{123}_{v_4}
+    \underbrace{3}_{v_2}
+    \underbrace{3}_{v_8}
+    \underbrace{1}_{v_9}
+    \underbrace{123}_{v_{10}}
+    \underbrace{2}_{v_{13}}
+  \end{align*}
+\end{Example}
