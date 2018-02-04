@@ -1,0 +1,64 @@
+\section{Document Listing}
+\label{sec:documentListing}
+
+\begin{Definition}
+  In \defi{document listing}{Document Listing} we ask for all the distinct documents containing a query $q$.
+\end{Definition}
+
+We will present a solution by Muthukrishnan \cite{Muthukrishnan2002} which has an optimal running time in the number of different documents. The pseudocode is given in Algorithm~\ref{alg:documentListing}.
+\begin{itemize}
+  \item Precompute a text index (i.e. \id{CSA}) and document array $\mathcal{D}$. Further precompute an array $E$ with $E[i] = \max \{j \mid j < i \land D[j] = D[i]\}$.
+  \item For a query $q$ get the lexicographical range of $[l,r]$ of $q$. Use range minimum queries on $E$ to get the distinct documents in the lexicographical range of $q$. When the $\proc{RMQ}$ result gets bigger than $l$, we can stop, because this document was found before.
+\end{itemize}
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Document-Listing}(q)$}
+    \li $[i,j] \gets \proc{Backward-Search}(CSA, q)$
+    \li $\proc{Document-Listing-Recursive}([i,j], i)$
+  \end{codebox}
+  \vspace{2mm}
+  \begin{codebox}
+    \Procname{$\proc{Document-Listing-Recursive}([i,j], sp)$}
+    \li \If $j \geq i$
+        \Then
+    \li   $p \gets \proc{RMQ}(i,j)$
+    \li   \If $E[p] < sp$
+          \Then
+    \li     \textbf{output} $\mathcal{D}[p]$ 
+          \End
+    \li   $\proc{Document-Listing-Recursive}([i, p-1], sp)$
+    \li   $\proc{Document-Listing-Recursive}([p+1, j], sp)$
+        \End
+  \end{codebox}
+  \caption{List all documents containing $q$.}
+  \label{alg:documentListing}
+\end{algorithm}
+
+\begin{Example}
+  Consider the concatenation
+  \begin{align*}
+    \mathcal{C} =
+    \underbrace{\texttt{ATA\#}}_{d_1}
+    \underbrace{\texttt{TAAA\#}}_{d_2}
+    \underbrace{\texttt{TATA\#}}_{d_3}
+    \texttt{\$}
+  \end{align*}
+  of length $n=15$. See Table~\ref{tbl:documentListingExample} for the needed values. \proc{Backward-Search} returns the gray shaded interval for the query $q=\texttt{TA}$. The minimal value in $E$ is at $i=13$, so the document $d_2$ at this position contains $q$. The next bigger value is at $i=11$, so $q$ is also in document $d_3$. The next bigger value is at $i=12$ adding document $d_1$ to the result. The next bigger value is at $i=14$, with $E[14]=11$ which is greater than or equal to the lower bound of the interval found in the backward search, so we can stop here.
+  \begin{table}[htb]
+    \centering
+    \begin{tabular}{rc|c|c|c|c|c|c|c|c|c|c|c|>{\columncolor{lightgray}}c|>{\columncolor{lightgray}}c|>{\columncolor{lightgray}}c|>{\columncolor{lightgray}}c|}
+      \cline{3-17}
+      $i$ & $=$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ & $10$ & $11$ & $12$ & $13$ & $14$ \\
+      \cline{3-17}
+      $\id{SA}$ & $=$ & $14$ & $13$ & $3$ & $8$ & $12$ & $2$ & $7$ & $6$ & $5$ & $10$ & $0$ & $11$ & $1$ & $4$ & $9$ \\
+      \cline{3-17}
+      $D$ & $=$ & $0$ & $3$ & $1$ & $2$ & $3$ & $1$ & $2$ & $2$ & $2$ & $3$ & $1$ & $3$ & $1$ & $2$ & $3$ \\
+      \cline{3-17}
+      $E$ & $=$ & $-1$ & $-1$ & $-1$ & $-1$ & $1$ & $2$ & $3$ & $6$ & $7$ & $4$ & $5$ & $9$ & $10$ & $8$ & $11$ \\
+      \cline{3-17}
+    \end{tabular}
+    \caption{Suffix array, document array and $E$ for string $C=\texttt{ATA\#TAAA\#TATA\#\$}$.}
+    \label{tbl:documentListingExample}
+  \end{table}
+\end{Example}
