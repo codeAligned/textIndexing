@@ -47,3 +47,13 @@
     \label{fig:greedyWaveletTree}
   \end{figure}
 \end{Example}
+
+\begin{Theorem}
+  The GREEDY framework needs time $\mathcal{O}(N \cdot(t_{deleteMax} + t_{insert}))$ in the worst case, where $N$ is the number of documents in the collection and $t_{deleteMax}$ and $t_{insert}$ are the times needed for the corresponding wavelet tree operations.
+\end{Theorem}
+
+\begin{Proof}
+  Consider a collection $\mathcal{D}$ where each $d \in \mathcal{D}$ is the same, for example $d = a$. Let the query be $a$ as well.
+
+  The backward search will return the whole set of all documents (excluding the sentinels), because every document contains the query. Not the GREEDY framework steps through the wavelet tree until $k$ leaves are found. In each step it takes the biggest interval from the priority queue and inserts its two children. Since the intervals in the leaves are of size $1$ each, first all inner nodes must be processed. For $N$ documents in the wavelet tree there are $N-1$ inner nodes. Therefore the runtime is $\mathcal{O}(N \cdot(t_{deleteMax} + t_{insert}))$.
+\end{Proof}
