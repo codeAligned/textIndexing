@@ -99,3 +99,47 @@ When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:w
   %                    the last sentence in the following paragraph.
   For a $\proc{Select}_q(i)$-query we start in the leave corresponding to symbol $q$ at position $i$. This can be found the same way as in the $\proc{Access}$-operation. Now we recursively process the parents until reaching the root. If the current vertex is a left child, the new position is the position of the $i$-th $0$ in the parent bitvector. If it is a right child, the new position is the position of the $i$-th $1$ in the parent bitvector. This needs $\proc{Select}$-queries on bitvectors, which can be done in constant time (not part of this document yet).
 \end{Proof}
+
+Another commonly used method on wavelet trees is \proc{Expand} given as pseudocode in Algorithm~\ref{alg:waveletTreeExpand}. If we are given an interval $[i,j]$ in the bitvector of some node $v=[l,r]$, \proc{Expand} splits this interval into two intervals $[i_l,j_l]$ and $[i_r,j_r]$ of the left and right child.
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Expand}(v = [l,r], [i,j])$}
+    \li $i_l \gets \proc{Rank}_0(i)$
+    \li $j_l \gets \proc{Rank}_0(j)$
+    \li $i_r \gets \proc{Rank}_1(i)$
+    \li $j_r \gets \proc{Rank}_1(j)$
+    \li \Return $\langle [i_l,r_l], [i_r,j_r] \rangle$
+  \end{codebox}
+  \caption{Expands a range $[i,j]$ of node $v$ into two child ranges.}
+  \label{alg:waveletTreeExpand}
+\end{algorithm}
+
+\begin{Example}
+  Let $A$ be an integer array of size $n$. We want to answer range median queries with an $\mathcal{O}(n\log n)$ datastructure in time $\mathcal{O}(\log n)$. Here the median of a range $A[i,j]$ is defined as the $\lceil \frac{j - i + 1}{2} \rceil$-th smallest element in $A[i,j]$.
+
+  The solution is given in Algorithm~\ref{alg:rangeMedianQuery}. It uses an integer wavelet tree and \proc{Expand} to find the median.
+  \begin{algorithm}[htb]
+    \begin{codebox}
+      \Procname{$\proc{Range-Median-Query}([i,j])$}
+      \li $\id{median} \gets \frac{j - i + 1}{2}$
+      \li $v \gets [0,n-1]$ \>\>\>\>\>\>\>\>\Comment Root of the wavelet tree.
+      \li $\id{range} \gets [i,j]$
+      \li \While not $\proc{Is-Leaf}(v)$
+          \Do
+      \li   $\id{childRanges} \gets \proc{Expand}(v, \id{range})$
+      \li   \If \proc{Size}(\id{childRanges}[0]) > \id{median}
+            \Then
+      \li     $v \gets \proc{Left-Child}(v)$
+      \li     $\id{range} \gets \id{childRanges}[0]$
+      \li   \Else
+      \li     $v \gets \proc{Right-Child}(v)$
+      \li     $\id{range} \gets \id{childRanges}[1]$
+            \End
+          \End
+      \li \Return $\proc{symbol}(v)$
+    \end{codebox}
+    \caption{Range median queries in an integer array.}
+    \label{alg:rangeMedianQuery}
+  \end{algorithm}
+\end{Example}
