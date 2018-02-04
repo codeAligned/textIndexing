@@ -1,0 +1,69 @@
+\section{Document Frequency $F_{\mathcal{D},q}$}
+
+In this section we will see how to efficiently compute the document frequency $F_{\mathcal{D},q}$ for a given query $q$ following a method from Sadakane \cite{Sadakane2007}.
+
+\begin{Definition}
+  The \defi{binary generalized suffix tree}{Binary Generalized Suffix Tree} (\id{BGST}) of a text is the suffix tree with inserted inner nodes, such that the each vertex has degree $0$ or $2$. Figure~\ref{fig:binaryGeneralizedSuffixTreeExample} shows the \id{BGST} for \texttt{LA O LA \# O LA LA LA \# O O LA \# \$}.
+\end{Definition}
+
+To count the document frequency $F_{\mathcal{D},q}$, execute the following steps:
+\begin{enumerate}
+  \item Build the \id{BGST}.
+  \item For each inner node $v$ in \id{BGST} keep a list $L_v$ of repeated documents. A document $d$ is added to $L_v$, if $d$ occurs in a leaf of the left and of the right subtree.
+  \item For a pattern $q$ let $v_q$ be the \defi{locus}{Locus}, that is the lowest node which path is prefixed by $q$. $F_{\mathcal{D},q}$ equals the number of leaves in the subtree of $v_q$ minus the number of repeated documents ($\sum_{v \in T_{v_q}} \vert L_v \vert$) in $v_q$'s subtree $T_{v_q}$.
+\end{enumerate}
+To find the number of repeated documents in the subtree of an inner node, number the nodes in order (as in Figure~\ref{fig:binaryGeneralizedSuffixTreeExample}). Traverse in this order and append $\vert L_v \vert$ in unary coding ($\vert L_v \vert$ $0$s and one $1$) to a bitvector $H$, which was initialized with a single $1$. Then all nodes of each possible subtree are contiguous and the number of repeated documents can be calculated by two select queries. This is shown in Algorithm~\ref{alg:documentFrequency}. The runtime depends only on the time to do the backward search.
+
+\begin{figure}[htb]
+  \centering
+  \input{documentRetrieval/tikz/binaryGeneralizedSuffixTreeExample.tex}
+  \caption{The binary generalized suffix tree of an example document collection $\mathcal{D} = \texttt{LA O LA \# O LA LA LA \# O O LA \# \$}$. The filled vertices are the dummy nodes added to get a binary tree. Round nodes are inner nodes, square nodes are leaves corresponding to suffixes. The number below each leaf is the entry in the document array.}
+  \label{fig:binaryGeneralizedSuffixTreeExample}
+\end{figure}
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Document-Frequency}(q)$}
+    \li $[l,r] \gets \proc{Backward-Search(\id{CSA}, q)}$
+    \li $s \gets r - l + 1$
+    \li $y \gets \proc{Select}_1(r, H)$
+    \li \If $l \isequal 0$
+        \Then
+    \li   \Return $s - (y - r + 1)$
+    \li \Else
+    \li   $x \gets \proc{Select}_1(l, H)$
+    \li   \Return $s - (y - r + 1 - (x - l + 1))$
+        \End
+  \end{codebox}
+  \caption{Compute the document frequency $F_{\mathcal{D},q}$ for query $q$.}
+  \label{alg:documentFrequency}
+\end{algorithm}
+
+\begin{Example}
+  Figure~\ref{fig:binaryGeneralizedSuffixTreeExample} shows the \id{BGST} for \texttt{LA O LA \# O LA LA LA \# O O LA \# \$}. We get the following bitvector $H$:
+  \begin{align*}
+    H = 1
+    \underbrace{1}_{v_1}
+    \underbrace{1}_{v_2}
+    \underbrace{1}_{v_3}
+    \underbrace{0001}_{v_4}
+    \underbrace{1}_{v_5}
+    \underbrace{1}_{v_6}
+    \underbrace{01}_{v_7}
+    \underbrace{01}_{v_8}
+    \underbrace{01}_{v_9}
+    \underbrace{0001}_{v_{10}}
+    \underbrace{1}_{v_{11}}
+    \underbrace{1}_{v_{12}}
+    \underbrace{01}_{v_{13}}
+  \end{align*}
+  Let's now consider $q = \texttt{LA}$. Then \proc{Backward-Search} returns suffix array interval $[4,9]$. Executing the steps in Algorithm~\ref{alg:documentFrequency} yields $s = 6$, $y = 15$ and $x = 7$, so that $3$ is returned.
+\end{Example}
+
+\begin{Theorem}
+  The document frequency can be calculated with an index needing $\mathcal{O}(n + \vert \id{CSA} \vert)$ bits space.
+\end{Theorem}
+
+\begin{Proof}
+  The bitvector $H$ has maximum size $2n - N$. Additionally $o(n)$ bits for a constant time select structure are needed. The only thing left is the space needed for \id{CSA}.
+\end{Proof}
