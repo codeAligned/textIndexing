@@ -66,19 +66,6 @@
 % Parameter 2: The term to put into the index.
 \newcommand{\defi}[2]{\emph{\textcolor{blue}{#1}}\index{#2}}
 
-% Oneliner to embed TikZ images.
-% Parameter 1: Path to the image.
-% Parameter 2: Caption.
-% Parameter 3: The name of the label ("fig:" will be added as a prefix).
-\newcommand{\drawing}[3]{
-  \begin{figure}[htbp]
-    \centering
-    \input{#1}
-    \caption{#2}
-    \label{fig:#3}
-  \end{figure}
-}
-
 \begin{document}
   \pagenumbering{roman}
   \tableofcontents

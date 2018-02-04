@@ -22,7 +22,12 @@
 \begin{Example}
   \label{exp:waveletTree}
   Figure~\ref{fig:waveletTreeExample} shows the wavelet tree for the string "abracadabra". By concatenating the bitvectors in each vertex in level order from left to right, we fully describe the wavelet tree. The bitvector describing this wavelet tree is \texttt{00100010010|00010000|101|0100010}, where the vertical lines show the borders between consecutive vertices. They do not need to be stored, because all layers (except maybe the last layer) contain exactly $n$ bits.
-  \drawing{basicDatastructures/tikz/waveletTreeExample.tex}{The wavelet tree for the string "abracadabra".}{waveletTreeExample}
+  \begin{figure}[htb]
+    \centering
+    \input{basicDatastructures/tikz/waveletTreeExample.tex}
+    \caption{The wavelet tree for the string "abracadabra".}
+    \label{fig:waveletTreeExample}
+  \end{figure}
 \end{Example}
 
 When storing the wavelet tree in a single bitvector $B$ as in Example~\ref{exp:waveletTree}, each vertex can be described by two indices giving the position of the bitvector of the vertex in $B$. For example the root corresponds to the pair $[0,n-1]$. Algorithm~\ref{alg:waveletTreeLevel} shows how to get the level of a vertex $v$ of the wavelet tree. This just uses the fact, that every level contains $n$ bits. Algorithm~\ref{alg:waveletTreeSize} calculates the length of the string stored in the given vertex. Algorithm~\ref{alg:waveletTreeLeftChild} and Algorithm~\ref{alg:waveletTreeRightChild} return the indices for the left and the right child of the given vertex. Assuming that we can execute the rank queries in constant time (Theorem~\ref{thm:bitvectorRank}), they both run in constant time. It is also possible to implement a \proc{Parent}-function, but this needs additional information, such as whether the current vertex is a left or a right child of its parent.
