@@ -1,0 +1,95 @@
+\begin{tikzpicture}[x={(4mm, 0mm)}, y={(0mm, 15mm)}]
+  \tikzstyle{vertex}=[draw, minimum size=17pt, inner sep=0pt]
+
+  \node[vertex, circle] (v1) at (1, 0) {$v_1$};
+  \node (l8) at (1, 0.4) {$\{{\color{red}1,2,3}\}$};
+
+  \node[vertex, circle] (v2) at (-9, -1) {$v_2$};
+  \draw (v1) -- (v2) node[below, sloped, pos=0.5] {\#};
+
+  \node[vertex, circle] (v3) at (-7, -2) {$v_3$};
+  \draw (v2) -- (v3) node[above, sloped, pos=0.5] {TA};
+
+  \node[vertex, circle] (v7) at (1, -1) {$v_7$};
+  \node (l8) at (3.5, -0.8) {$\{{\color{red}1,2,3}\}$};
+  \draw (v1) -- (v7) node[above, sloped, pos=0.5] {A};
+
+  \node[vertex, circle] (v5) at (-3, -2) {$v_5$};
+  \draw (v7) -- (v5) node[above, sloped, pos=0.5] {\#};
+
+  \node[vertex, circle] (v6) at (-1, -3) {$v_6$};
+  \draw (v5) -- (v6) node[above, sloped, pos=0.5] {TA};
+
+  \node[vertex, circle] (v8) at (3, -2) {$v_8$};
+  \node (l8) at (1.3, -2) {$\{{\color{red}2}\}$};
+  \draw (v7) -- (v8) node[above, sloped, pos=0.5] {A};
+
+  \node[vertex, circle] (v10) at (7, -2) {$v_{10}$};
+  \draw (v7) -- (v10) node[above, sloped, pos=0.5] {TA\#};
+
+  \node[vertex, circle] (v13) at (15, -1) {$v_{13}$};
+  \node (l8) at (16.7, -1) {$\{{\color{red}3}\}$};
+  \draw (v1) -- (v13) node[above, sloped, pos=0.5] {TA};
+
+  \node[vertex, circle] (v12) at (11, -2) {$v_{12}$};
+  \draw (v13) -- (v12) node[above, sloped, pos=0.5] {\#};
+
+  \node[vertex] (s14) at (-13, -1) {$14$};
+  \draw (v1) -- (s14) node[above, sloped, pos=0.5] {\$};
+
+  \node[vertex] (s13) at (-10, -2) {$13$};
+  \node (d13) at (-10, -2.4) {${\color{red}3}$};
+  \draw (v2) -- (s13) node[above, sloped, pos=0.5] {\$};
+
+  \node[vertex] (s3) at (-8, -4.5) {$3$};
+  \node (d3) at (-8, -4.9) {${\color{red}1}$};
+  \draw (v3) -- (s3) node[above, sloped, pos=0.5] {AA\#TATA\#\$};
+
+  \node[vertex] (s8) at (-6, -4.5) {$8$};
+  \node (d8) at (-6, -4.9) {${\color{red}2}$};
+  \draw (v3) -- (s8) node[above, sloped, pos=0.5] {TA\#\$};
+
+  \node[vertex] (s12) at (-4, -3) {$12$};
+  \node (d12) at (-4, -3.4) {${\color{red}3}$};
+  \draw (v5) -- (s12) node[above, sloped, pos=0.5] {\$};
+
+  \node[vertex] (s2) at (-2, -5.5) {$2$};
+  \node (d2) at (-2, -5.9) {${\color{red}1}$};
+  \draw (v6) -- (s2) node[above, sloped, pos=0.5] {AA\#TATA\#\$};
+
+  \node[vertex] (s7) at (0, -5.5) {$7$};
+  \node (d7) at (0, -5.9) {${\color{red}2}$};
+  \draw (v6) -- (s7) node[above, sloped, pos=0.5] {TA\#\$};
+
+  \node[vertex] (s6) at (2, -4) {$6$};
+  \node (d6) at (2, -4.4) {${\color{red}2}$};
+  \draw (v8) -- (s6) node[above, sloped, pos=0.5] {TATA\#\$};
+
+  \node[vertex] (s5) at (4, -4) {$5$};
+  \node (d5) at (4, -4.4) {${\color{red}2}$};
+  \draw (v8) -- (s5) node[above, sloped, pos=0.5] {A\#TATA\#\$};
+
+  \node[vertex] (s10) at (6, -4.5) {$10$};
+  \node (d10) at (6, -4.9) {${\color{red}3}$};
+  \draw (v10) -- (s10) node[above, sloped, pos=0.5] {\$};
+
+  \node[vertex] (s0) at (8, -4.5) {$0$};
+  \node (d0) at (8, -4.9) {${\color{red}1}$};
+  \draw (v10) -- (s0) node[above, sloped, pos=0.5] {TAAA\#TATA\#\$};
+
+  \node[vertex] (s11) at (10, -5) {$11$};
+  \node (d11) at (10, -5.4) {${\color{red}3}$};
+  \draw (v12) -- (s11) node[above, sloped, pos=0.5] {\$};
+
+  \node[vertex] (s1) at (12, -5) {$1$};
+  \node (d1) at (12, -5.4) {${\color{red}1}$};
+  \draw (v12) -- (s1) node[above, sloped, pos=0.5] {TAAA\#TATA\#\$};
+
+  \node[vertex] (s4) at (15, -3.5) {$4$};
+  \node (d4) at (15, -3.9) {${\color{red}2}$};
+  \draw (v13) -- (s4) node[above, sloped, pos=0.5] {AA\#TATA\#\$};
+
+  \node[vertex] (s9) at (19, -2.5) {$9$};
+  \node (d9) at (19, -2.9) {${\color{red}3}$};
+  \draw (v13) -- (s9) node[above, sloped, pos=0.5] {TA\#\$};
+\end{tikzpicture}

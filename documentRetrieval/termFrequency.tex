@@ -1,0 +1,46 @@
+\section{Top-$k$ Single Term Frequency}
+
+\begin{Definition}
+  Given a query term (or phrase) $q$ of length $m$ and a parameter $k$. Report the \defi{top-$k$ documents with respect to single term frequency}{Top-$k$ Single Term Frequency}.
+\end{Definition}
+
+\begin{Theorem}
+  \label{thm:singleTermFrequencySimple}
+  The top-$k$ documents can be found in time $\mathcal{O}(m + x(\log k + \log N))$, where $x$ is the number of distinct documents $q$ appears in.
+\end{Theorem}
+
+\begin{Proof}
+  The documents can be found in the following steps:
+  \begin{enumerate}
+    \item Get the $x$ distinct documents $d_{r_1}, \ldots, d_{r_x}$ where $q$ occurs in using the method from Section~\ref{sec:documentListing} in $\mathcal{O}(m)$.
+    % TODO (pjungeblut): How can this be done in O(log N)? Find out and add here.
+    \item Determine the frequency $f_{d_{r_i},q}$ of $q$ in each $d_{r_i}$. This can be done in $\mathcal{O}(\log N)$ per document.
+    \item Maintain a min-heap of $(f_{d_{r_i},q}, d_{r_i})$-pairs of size $k$. The heap operations take time $\mathcal{O}(\log k)$.
+  \end{enumerate}
+  In total we get $\mathcal{O}(m + x \cdot \log N + x \cdot \log k) = \mathcal{O}(m + x(\log k + \log N))$.
+\end{Proof}
+
+The solution presented in Theorem~\ref{thm:singleTermFrequencySimple} is already independent of the text length $n$. However it is still dependent on $x$, which can in the worst case be as large as the number of documents $N$.
+
+% TODO (pjungeblut): Add space requirement to the theorem.
+\begin{Theorem}
+  The top-$k$ documents can be found in time $\mathcal{O}(m \cdot t_{LF} + \log n\cdot k)$ (Gog \cite{Gog2015}).
+\end{Theorem}
+
+\begin{Proof}
+  % TODO (pjungeblut): Prove this theorem.
+  Figure~\ref{fig:singleTermFrequencySuffixTree}
+\end{Proof}
+
+\begin{figure}[htb]
+  \centering
+  \input{documentRetrieval/tikz/singleTermFrequencySuffixTree.tex}
+  \caption{}
+  \label{fig:singleTermFrequencySuffixTree}
+\end{figure}
+
+At last, an optimal solution is known but is not covered in this document.
+
+\begin{Theorem}
+  The top-$k$ documents can be found in time $\mathcal{O}(m + k)$ query time in $\mathcal{O}(n \log n)$ bits space (Navarro \& Nekrich \cite{Navarro2012} based on framework by Hon \cite{Hon2014}).
+\end{Theorem}
