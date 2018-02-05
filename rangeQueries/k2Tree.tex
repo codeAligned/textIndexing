@@ -1,0 +1,66 @@
+\section{$k^2$-Trees}
+
+\begin{Definition}
+  The \defi{$k^2$-tree}{$k^2$-Tree} is a datastructure that partitions an $s \times s$-grid into $k^2$ equal sized quadrants. This partition is represented as the root of a $k^2$-ary cardinal tree. The decomposition is done recursively on each subgrid until it has size $1 \times 1$.
+\end{Definition}
+
+For $k = 2$ the $k^2$-tree is also known as a \defi{quadtree}{Quadtree}. In the following examples we will always choose $k = 2$ for simplicity.
+
+We will use $k^2$-trees to answer (weighted) two-dimensional range queries on a grid. Given a rectangular region $[x_1, x_2] \times [y_1, y_2]$, count/report the (top-$l$) points in it. A $k^2$-tree cannot count the points without traversing them all, so we will only consider report queries.
+
+Although we cannot prove a good runtime for the $k^2$-tree or -treap, both perform quite well in practice.
+
+% TODO (pjungeblut): Write section about unweighted points.
+
+\subsection{Weighted Points}
+To handle weighted points, we annotate each node of the $k^2$-tree with the position and weight of the heaviest element in its corresponding subgrid (ties are broken arbitrarily). Then this element is removed from the grid, so that the children contain the next smaller maximal values of their corresponding subgrid. This gives the tree an additional max-heap structure, it is therefore also known as a \defi{$k^2$-treap}{$k^2$-Treap}.
+
+\begin{Example}
+  Consider the $8 \times 8$-grid shown in Figure~\ref{fig:k2TreapGrid}. The corresponding $2^2$-treap is shown in Figure~\ref{fig:k2Treap}. The root is annotated with $(3, 0) : 8$, meaning that the maximal value is $8$ and is in the cell at coordinates $(3, 0)$ of the grid. Because it is then deleted, the maximum in the subgrid $[3, 4] \times [0, 1]$ is $2$ (the only remaining value in this subgrid).
+
+  \begin{figure}[htb]
+    \centering
+    \input{rangeQueries/tikz/k2TreapGrid.tex}
+    \caption{An $8 \times 8$ grid with weights in some cells. The thick lines show the subdivision for a $2^2$-treap. The red cell is the overall maximum. After deleting it, the green cells are maximal in their corresponding $4 \times 4$ grid. After deleting them as well, the blue cells are maximal in their corresponding $2 \times 2$ grids.}
+    \label{fig:k2TreapGrid}
+  \end{figure}
+
+
+  \begin{figure}[htb]
+    \centering
+    \input{rangeQueries/tikz/k2Treap.tex}
+    \caption{The $2^2$-treap for the grid shown in Figure~\ref{fig:k2TreapGrid}. The notation of the vertices shows first the position of the maximal element in the corresponding subgrid and then its value. The position is omitted on the last layer, since the corresponding subgrid has size $1 \times 1$.}
+    \label{fig:k2Treap}
+  \end{figure}
+\end{Example}
+
+To extract the heaviest points we use a max-priority-queue~\id{PQ}. Initially we insert the root of the $k^2$-treap. Whenever we pop a vertex from~\id{PQ}, we add all its non-empty children that intersect the query range into it. If the maximal element stored at the current vertex is inside the range, we add it to our result. Otherwise we ignore it and continue with the next node in the priority-queue. The pseudocode is given in Algorithm~\ref{alg:k2TreapReport}.
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Report}(x_1, x_2, y_1, y_2, l)$}
+    \li $\id{PQ} \gets$ empty max-priority-queue
+    \li $r \gets \attrib{T}{root}$
+    \li $\attribii{PQ}{insert}(r)$ \>\>\>\>\Comment Priority-queue ordered by weight annotated to each vertex.
+    \li $c \gets 0$
+    \li \While not $\attribii{PQ}{empty}()$ and $c < l$
+        \Do
+    \li   $v \gets \attribii{PQ}{top}()$
+    \li   $\attribii{PQ}{pop}()$
+    \li   \If $x_1 \leq \attrib{v}{x} \leq x_2$ and $y_1 \leq \attrib{v}{y} \leq y_2$
+          \Then
+    \li     \textbf{output} $v$
+    \li     $c \gets c + 1$
+          \End
+    \li   \For \textbf{each} child $w$ of $v$
+          \Do
+    \li     \If \attrib{w}{range} intersects $[x_1, x_2] \times [y_1, y_2]$
+            \Then
+    \li       $\attribii{PQ}{push}(w)$
+            \End
+          \End
+        \End
+  \end{codebox}
+  \caption{Reports the top-$l$ points from $k^2$-treap $T$ in $[x_1, x_2] \times [y_1, y_2]$.}
+  \label{alg:k2TreapReport}
+\end{algorithm}

@@ -1,0 +1,49 @@
+\begin{tikzpicture}[x={(5mm, 0mm)}, y={(0mm, 5mm)}]
+  \fill[red!20!white] (3, 0) -- (4, 0) -- (4, 1) -- (3, 1) -- cycle;
+  \fill[green!20!white] (1, 2) -- (2, 2) -- (2, 3) -- (1, 3) -- cycle;
+  \fill[green!20!white] (6, 0) -- (7, 0) -- (7, 1) -- (6, 1) -- cycle;
+  \fill[green!20!white] (4, 4) -- (5, 4) -- (5, 5) -- (4, 5) -- cycle;
+  \fill[blue!20!white] (0, 0) -- (1, 0) -- (1, 1) -- (0, 1) -- cycle;
+  \fill[blue!20!white] (2, 1) -- (3, 1) -- (3, 2) -- (2, 2) -- cycle;
+  \fill[blue!20!white] (0, 3) -- (1, 3) -- (1, 4) -- (0, 4) -- cycle;
+  \fill[blue!20!white] (2, 2) -- (3, 2) -- (3, 3) -- (2, 3) -- cycle;
+  \fill[blue!20!white] (4, 0) -- (5, 0) -- (5, 1) -- (4, 1) -- cycle;
+  \fill[blue!20!white] (7, 0) -- (8, 0) -- (8, 1) -- (7, 1) -- cycle;
+  \fill[blue!20!white] (6, 6) -- (7, 6) -- (7, 7) -- (6, 7) -- cycle;
+
+  \foreach \d in {0, 1, ..., 8} {
+    \draw[black!70!white] (\d, 0) to (\d, 8);
+    \draw[black!70!white] (0, \d) to (8, \d);
+  }
+  \foreach \d in {0, 1, ..., 7} {
+    \node[black!70!white] (c\d) at (\d + 0.5, -0.5) {$\d$};
+    \node[black!70!white] (l\d) at (-0.5, \d + 0.5) {$\d$};
+  }
+  \draw[line width=1.5pt] (0, 0) to (0, 8) to (8, 8) to (8, 0) to (0, 0) to (0, 8);
+  \draw[line width=1.5pt] (0, 4) to (8, 4);
+  \draw[line width=1.5pt] (4, 0) to (4, 8);
+  \draw[line width=1pt] (0, 2) to (8, 2);
+  \draw[line width=1pt] (2, 0) to (2, 4);
+  \draw[line width=1pt] (6, 0) to (6, 8);
+  \draw[line width=1pt] (4, 6) to (8, 6);
+  \draw[line width=0.7pt] (1, 0) to (1, 4);
+  \draw[line width=0.7pt] (3, 0) to (3, 4);
+  \draw[line width=0.7pt] (5, 0) to (5, 2);
+  \draw[line width=0.7pt] (7, 0) to (7, 2);
+  \draw[line width=0.7pt] (5, 4) to (5, 6);
+  \draw[line width=0.7pt] (7, 6) to (7, 8);
+  \draw[line width=0.7pt] (0, 1) to (8, 1);
+  \draw[line width=0.7pt] (0, 3) to (4, 3);
+  \draw[line width=0.7pt] (4, 5) to (6, 5);
+  \draw[line width=0.7pt] (6, 7) to (8, 7);
+
+  \foreach \d/\x/\y in {5/0/0, 8/3/0, 5/4/0, 7/6/0, 6/7/0,
+                        1/0/1, 2/2/1, 2/4/1, 3/5/1, 4/6/1, 1/7/1,
+                        7/1/2, 4/2/2, 2/3/2,
+                        7/0/3, 3/1/3, 1/3/3,
+                        7/4/4,
+                        3/6/6, 2/7/6,
+                        1/6/7, 0/7/7} {
+    \node (\d\x\y) at (\x + 0.5, \y + 0.5) {$\d$};
+  }
+\end{tikzpicture}
