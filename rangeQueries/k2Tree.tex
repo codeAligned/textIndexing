@@ -10,7 +10,33 @@ We will use $k^2$-trees to answer (weighted) two-dimensional range queries on a 
 
 Although we cannot prove a good runtime for the $k^2$-tree or -treap, both perform quite well in practice.
 
-% TODO (pjungeblut): Write section about unweighted points.
+\subsection{Unweighted Points}
+To report all points in the given range $[x_1, x_2] \times [y_1, y_2]$ we traverse the $k^2$-tree. Starting with the root, at each node we check whether its child ranges (at least partially) overlap with the query range. If so, we step down into these children until ending at a leaf reporting its value. If a child does not overlap the query range, we do not step down into it. This is again shown in Algorithm~\ref{alg:k2TreeReport}.
+
+\begin{algorithm}[htb]
+  \begin{codebox}
+    \Procname{$\proc{Report}([x_1, x_2] \times [y_1, y_2])$}
+    \li $\proc{Report-Recursive}(\attrib{K}{root}, [x_1, x_2] \times [y_1, y_2])$
+  \end{codebox}
+  \vspace{1mm}
+  \begin{codebox}
+    \Procname{$\proc{Report-Recursive}(v, [x_1, x_2] \times [y_1, y_2])$}
+    \li \If $s \isequal 1$
+        \Then
+    \li   \textbf{output} $v$
+    \li \Else
+    \li   \For \textbf{each} child $w$ of $v$
+          \Do
+    \li     \If \attrib{w}{range} intersects $[x_1, x_2] \times [y_1, y_2]$
+            \Then
+    \li       $\proc{Report-Recursive}(w, [x_1, x_2] \times [y_1, y_2])$
+            \End
+          \End
+        \End
+  \end{codebox}
+  \caption{Reports the points from $k^2$-tree $T$ in range $[x_1, x_2] \times [y_1, y_2]$.}
+  \label{alg:k2TreeReport}
+\end{algorithm}
 
 \subsection{Weighted Points}
 To handle weighted points, we annotate each node of the $k^2$-tree with the position and weight of the heaviest element in its corresponding subgrid (ties are broken arbitrarily). Then this element is removed from the grid, so that the children contain the next smaller maximal values of their corresponding subgrid. This gives the tree an additional max-heap structure, it is therefore also known as a \defi{$k^2$-treap}{$k^2$-Treap}.
