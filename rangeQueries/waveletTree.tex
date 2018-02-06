@@ -1,0 +1,87 @@
+\section{Wavelet Trees}
+
+Different to $k^2$-trees we can prove good runtime for range queries when we use wavelet trees.
+
+\subsection{Unweighted Points}
+
+\begin{Definition}
+  Given a $[0, n-1] \times [0, n-1]$ grid $G$ and a set $P$ of $n$ points $(i, S[i])$ for $0 \leq i < n$. For a range of points $[x_1, x_2] \times [y_1, y_2]$ we define two queries:
+  \begin{itemize}
+    \item A \defi{range count query}{Range Count Query} asks to count the number of points of $G$ in the range.
+    \item A \defi{range report query}{Range Report Query} asks to report all of these points.
+  \end{itemize}
+\end{Definition}
+
+In above grids each row and column has only one point in it. This can be assumed without loss of generality by coordinate compression.
+
+% TODO (pjungeblut): This lacks a nice visualization.
+\begin{Theorem}
+  Range count queries can be answered in $\mathcal{O}(\log n)$ time using an index of size $n \log n + o(n \log n)$ bits. Range report queries can be answered in $\mathcal{O}(\log n + \id{occ}\cdot\log n)$ using the same index. Here \id{occ} is the number of points in the given range.
+\end{Theorem}
+
+\begin{Proof}
+  The grid has exactly one point per column, so we can store the points as a sequence of the $y$-coordinates. The $x$-coordinate is the position in this sequence. Now build an integer wavelet tree \id{WT} over this sequence. Now each wavelet tree node corresponds to some range of $y$-coordinates. For example the left child of the root to $[y_1, y_2] = [0, \lfloor\frac{n}{2}\rfloor]$ and the right child of the root to $[y_1, y_2] = [\lceil\frac{n}{2}\rceil, n-1]$. The $y$-range covered by a wavelet tree node $v$ is given by $\proc{Y-Range}(v)$. The $x$-range $[x_1, x_2]$ is just a range in the bitvector of the root node. By using $\proc{Expand}(v, [x_1, x_2])$, we can map this range to the two child values.
+
+  Method \proc{Range-Count} from Algorithm~\ref{alg:rangeCountWaveletTree} counts the number of occurrences by traversing the wavelet tree. When the $y$-range of a vertex $v$ is complete inside the search range, all points in it belong to the search range. If it lies complete outside we can stop at this node. In the remaining case that the $y$-range is partially covering the search range, we step down into the two children.
+
+  \begin{algorithm}[htb]
+    \begin{codebox}
+      \Procname{$\proc{Range-Count}([x_1, x_2] \times [y_1, y_2])$}
+      \li \Return $\proc{Range-Count}(\attribii{WT}{root}, [x_1, x_2] \times [y_1, y_2])$
+    \end{codebox}
+    \vspace{1mm}
+    \begin{codebox}
+      \Procname{$\proc{Range-Count}(v, [x_1, x_2] \times [y_1, y_2])$}
+      \li \If $x_2 < x_1$
+          \Then
+      \li   \Return $0$
+          \End
+      \li \If $[y_1, y_2] \cap \proc{Y-Range}(v) = \emptyset$
+          \Then
+      \li   \Return $0$
+          \End
+      \li \If $\proc{Y-Range}(v) \subseteq [y_1, y_2]$
+          \Then
+      \li   \Return $x_2 - x_1 + 1$\label{line:wholeRangeCovered}
+          \End
+      \li $l \gets \proc{Left-Child}(v)$
+      \li $r \gets \proc{Right-Child}(v)$
+      \li $\langle [x_1^l, x_2^l], [x_1^r, x_2^r] \rangle \gets \proc{Expand}(v, [x_1, x_2])$
+      \li \Return $\proc{Range-Count}(l, [x_1^l, x_2^l] \times [y_1, y_2]) + \proc{Range-Count}(r, [x_1^r, x_2^r] \times [y_1, y_2])$
+    \end{codebox}
+    \caption{Counts the points in range $[x_1, x_2] \times [y_1, y_2]$ using wavelet tree \id{WT}.}
+    \label{alg:rangeCountWaveletTree}
+  \end{algorithm}
+
+  \proc{Range-Count} needs time in $\mathcal{O}(\log n)$, which is the maximal number of vertices needed to span the $y$-range of the query.
+
+  To report all the points in the search range, we need to change Line~\ref{line:wholeRangeCovered} in Algorithm~\ref{alg:rangeCountWaveletTree} to call $\proc{Range-Report}(v, [x_1, x_2])$. The code is given in Algorithm~\ref{alg:rangeReportWaveletTree}.
+
+  \begin{algorithm}[htb]
+    \begin{codebox}
+      \Procname{$\proc{Range-Report}(v, [x_1, x_2])$}
+      \li \If $x_2 < x_1$
+          \Then
+      \li   \Return $0$
+          \End
+      \li \If $\proc{Is-Leaf}(v)$
+          \Then
+      \li   $y \gets \proc{Y-Range}(v)[0]$
+      \li   \For $x \gets x_1 \To x_2$
+            \Do
+      \li     \textbf{output} $(\proc{Select}_y(x + 1), y)$
+            \End
+      \li   \Return $x_2 - x_1 + 1$
+      \li \Else
+      \li   $l \gets \proc{Left-Child}(v)$
+      \li   $r \gets \proc{Right-Child}(v)$
+      \li   $\langle [x_1^l, x_2^l], [x_1^r, x_2^r] \rangle \gets \proc{Expand}(v, [x_1, x_2])$
+      \li   \Return $\proc{Range-Report}(l, [x_1^l, x_2^l]) + \proc{Range-Report}(r, [x_1^r, x_2^r])$
+          \End
+    \end{codebox}
+    \caption{Reports the points in $[x_1, x_2]$ of a node with $y$-range completely covered.}
+    \label{alg:rangeReportWaveletTree}
+  \end{algorithm}
+
+  \proc{Range-Report} from Algorithm~\ref{alg:rangeReportWaveletTree} together with \proc{Range-Count} runs in $\mathcal{O}(\log n + \id{occ} \cdot \log n)$, because for each of the $\id{occ}$ occurrences we must step down to a leaf of the wavelet tree in time $\mathcal{O}(\log n)$.
+\end{Proof}
