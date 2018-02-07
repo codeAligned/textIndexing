@@ -85,3 +85,12 @@ In above grids each row and column has only one point in it. This can be assumed
 
   \proc{Range-Report} from Algorithm~\ref{alg:rangeReportWaveletTree} together with \proc{Range-Count} runs in $\mathcal{O}(\log n + \id{occ} \cdot \log n)$, because for each of the $\id{occ}$ occurrences we must step down to a leaf of the wavelet tree in time $\mathcal{O}(\log n)$.
 \end{Proof}
+
+\begin{Example}{\emph{Position Restricted Substring Search:}}
+  Let $T$ be a text of length $n$ and $q$ be a query of length $m$.
+  \begin{itemize}
+    \item A count query asks for the number of occurrences of $q$ in $T[l,r]$.
+    \item A report query asks for a list of all occurrences of $q$ in $T[l,r]$.
+  \end{itemize}
+  In both cases the solution is to build a wavelet tree \id{WT} over the suffix array \id{SA}. Now we use \proc{Backward Search} to get the suffix array interval $[x_1, x_2]$ of $q$ and make a count/report query on \id{WT} with range $[x_1, x_2] \times [l, r]$. The time complexity is $\mathcal{O}(m \cdot t_{LF} + \log n + \id{occ}\log n)$ where the first summand is the time needed to get the suffix array interval. The space needed is just the space for the wavelet tree and for the suffix array, so $n \log n + o(n \log n) + \vert CSA\vert$ bits.
+\end{Example}
