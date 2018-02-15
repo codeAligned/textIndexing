@@ -121,6 +121,7 @@ Another commonly used method on wavelet trees is \proc{Expand} given as pseudoco
 \end{algorithm}
 
 \begin{Example}
+  \label{exp:rangeMedianQueries}
   Let $A$ be an integer array of size $n$. We want to answer range median queries with an $\mathcal{O}(n\log n)$ datastructure in time $\mathcal{O}(\log n)$. Here the median of a range $A[i,j]$ is defined as the $\lceil \frac{j - i + 1}{2} \rceil$-th smallest element in $A[i,j]$.
 
   The solution is given in Algorithm~\ref{alg:rangeMedianQuery}. It uses an integer wavelet tree and \proc{Expand} to find the median.
