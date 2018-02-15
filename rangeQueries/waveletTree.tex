@@ -20,7 +20,7 @@ In above grids each row and column has only one point in it. This can be assumed
 \end{Theorem}
 
 \begin{Proof}
-  The grid has exactly one point per column, so we can store the points as a sequence of the $y$-coordinates. The $x$-coordinate is the position in this sequence. Now build an integer wavelet tree \id{WT} over this sequence. Now each wavelet tree node corresponds to some range of $y$-coordinates. For example the left child of the root to $[y_1, y_2] = [0, \lfloor\frac{n}{2}\rfloor]$ and the right child of the root to $[y_1, y_2] = [\lceil\frac{n}{2}\rceil, n-1]$. The $y$-range covered by a wavelet tree node $v$ is given by $\proc{Y-Range}(v)$. The $x$-range $[x_1, x_2]$ is just a range in the bitvector of the root node. By using $\proc{Expand}(v, [x_1, x_2])$, we can map this range to the two child values.
+  The grid has exactly one point per column, so we can store the points as a sequence of the $y$-coordinates. The $x$-coordinate is the position in this sequence. Now build an integer wavelet tree \id{WT} over this sequence. Each wavelet tree node corresponds to some range of $y$-coordinates. For example the left child of the root to $[y_1, y_2] = [0, \lfloor\frac{n}{2}\rfloor]$ and the right child of the root to $[y_1, y_2] = [\lceil\frac{n}{2}\rceil, n-1]$. The $y$-range covered by a wavelet tree node $v$ is given by $\proc{Y-Range}(v)$. The $x$-range $[x_1, x_2]$ is just a range in the bitvector of the root node. By using $\proc{Expand}(v, [x_1, x_2])$, we can map this range to the two child values.
 
   Method \proc{Range-Count} from Algorithm~\ref{alg:rangeCountWaveletTree} counts the number of occurrences by traversing the wavelet tree. When the $y$-range of a vertex $v$ is complete inside the search range, all points in it belong to the search range. If it lies complete outside we can stop at this node. In the remaining case that the $y$-range is partially covering the search range, we step down into the two children.
 
@@ -93,4 +93,17 @@ In above grids each row and column has only one point in it. This can be assumed
     \item A report query asks for a list of all occurrences of $q$ in $T[l,r]$.
   \end{itemize}
   In both cases the solution is to build a wavelet tree \id{WT} over the suffix array \id{SA}. Now we use \proc{Backward Search} to get the suffix array interval $[x_1, x_2]$ of $q$ and make a count/report query on \id{WT} with range $[x_1, x_2] \times [l, r]$. The time complexity is $\mathcal{O}(m \cdot t_{LF} + \log n + \id{occ}\log n)$ where the first summand is the time needed to get the suffix array interval. The space needed is just the space for the wavelet tree and for the suffix array, so $n \log n + o(n \log n) + \vert CSA\vert$ bits.
+\end{Example}
+
+% TODO (pjungeblut): The description here is kind of bad. Fix it.
+\begin{Example}
+  Let $T$ be a text of length $n$ and $q$ be a query of length $m$.
+  \begin{itemize}
+    \item A substring rank query $\proc{Rank}_q(i, T, [l, r])$ asks for the number of occurrences of $q$ in $T[l, r]$.
+    \item A substring select query $\proc{Select}_q(i, T, [l, r])$ asks for the $i$-th occurrence of $q$ in $T$.
+  \end{itemize}
+
+  We will use the following datastructures as our index: The wavelet tree from Theorem~\ref{thm:waveletTreeSAISALFPsi} to access \id{SA}, \id{CSA}, \id{LF} and $\Psi$ in $\mathcal{O}(\log n)$ each. This needs $n \log n + o(n \log n)$ bits space. Further we need the $C$ array we used with the suffix array. For each $c \in \Sigma$ it stores the position of the first suffix in \id{SA} starting with $c$.
+
+  To answer the queries, we first get the suffix array interval $[x_1, x_2]$ of $q$. This can be done with either backward or forward search. The interval gives us all suffixes starting with $q$. Now for $\proc{Select}_q$ we want are interested in the $i$-th smallest index in this interval. This can be done equivalently to the calculation of range median queries in Example~\ref{exp:rangeMedianQueries}. For $\proc{Rank}_q$ we want to count how many smaller elements there are. When in the leaf of the wavelet tree, we can go back up to the root, always adding the number of smaller elements from nodes further left in the wavelet tree.
 \end{Example}
