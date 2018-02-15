@@ -1,0 +1,17 @@
+\chapter{External Memory}
+
+When handling very large texts and indices, the data might not fit into memory any more. In this case some of it must be swapped to the disk, resulting in much greater access times. To analyze the performance of these indices we introduce the \defi{external memory model}{External Memory Model} shown in Figure~\ref{fig:externalMemoryModel}. Here the CPU can only work with data available in the main memory but all executed operations have zero cost. The only costing operation is to load a block from the disk to the main memory. Each of these loads costs one unit. In the following sections we specify the model by two parameters: $B$ is the number of items stored in each block and $M$ is the number of items that fit into the main memory simultaneously.
+
+\begin{figure}[htb]
+  \centering
+  \input{externalMemory/tikz/externalMemory.tex}
+  \caption{Schematic set up of the external memory model.}
+  \label{fig:externalMemoryModel}
+\end{figure}
+
+\begin{Example}
+  Let $T$ be a text of length $n$ and $q$ be a query of size $m$. The I/O complexity for count queries using a suffix array is given by $\mathcal{O}(m\cdot\log\frac{n}{B})$. For this example we used a naive binary search in the suffix array, comparing the query to $\mathcal{O}(\log n)$ suffixes.
+\end{Example}
+
+\input{externalMemory/stringBTree.tex}
+\input{externalMemory/geometricBurrowsWheelerTransformation.tex}

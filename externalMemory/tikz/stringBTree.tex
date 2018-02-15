@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+  \node[draw, inner sep=10pt] (root) at (6, 3.5) {\texttt{58~17~~8~77}};
+  \node[draw, inner sep=10pt] (l) at (2, 1.75) {\texttt{58~29~62~17}};
+  \node[draw, inner sep=10pt] (r) at (10, 1.75) {\texttt{~8~36~47~77}};
+  \node[draw, inner sep=10pt] (ll) at (0, 0) {\texttt{58~84~~0~29}};
+  \node[draw, inner sep=10pt] (lr) at (4, 0) {\texttt{62~42~66~17}};
+  \node[draw, inner sep=10pt] (rl) at (8, 0) {\texttt{~8~13~~2~36}};
+  \node[draw, inner sep=10pt] (rr) at (12, 0) {\texttt{47~72~23~77}};
+
+  \draw[->] (root) -- (l);
+  \draw[->] (root) -- (r);
+  \draw[->] (l) -- (ll);
+  \draw[->] (l) -- (lr);
+  \draw[->] (r) -- (rl);
+  \draw[->] (r) -- (rr);
+\end{tikzpicture}

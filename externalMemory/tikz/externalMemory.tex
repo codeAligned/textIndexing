@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+  \draw[fill=black!20!white] (11, 2.5) -- (14, 2.5) -- (14, 3) -- (11, 3) -- cycle;
+  \draw[fill=black!20!white] (4.5, 1.5) -- (8.5, 1.5) -- (8.5, 2) -- (4.5, 2) -- cycle;
+
+  \draw (0, 0) -- (3, 0) -- (3, 2) -- (0, 2) -- cycle;
+  \draw (4.5, -0.5) -- (8.5, -0.5) -- (8.5, 2.5) -- (4.5, 2.5) -- cycle;
+  \draw (11, -2) -- (14, -2) -- (14, 4) -- (11, 4) -- cycle; 
+
+  \draw (3, 1) -- (4.5, 1);
+  \draw (8.5, 1) -- (11, 1);
+  \draw[red, dashed] (9.75, -2) -- (9.75, 4);
+  \draw[thick, <->] (8.5, 1.75) -- (11, 2.75) node[above, sloped, pos=0.3] {I/O}; 
+
+  \node (cpu) at (1.5, 1) {CPU};
+  \node (memory) at (5.5, 1) {Memory};
+  \node (disk) at (12.5, 1) {Disk};
+\end{tikzpicture}
